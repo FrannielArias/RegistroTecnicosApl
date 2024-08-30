@@ -5,7 +5,7 @@ namespace RegistroTecnicosApl.Models
     public class Tecnicos
     {
         [Key]
-        public int EstudianteId {  get; set; }
+        public int TecnicoId {  get; set; }
 
         [Required(ErrorMessage = "Este campo es obligatorio.")]
         [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Solo se permiten letras en este campo.")]
