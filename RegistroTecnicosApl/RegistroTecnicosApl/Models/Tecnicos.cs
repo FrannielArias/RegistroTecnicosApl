@@ -8,7 +8,7 @@ namespace RegistroTecnicosApl.Models
         public int TecnicoId {  get; set; }
 
         [Required(ErrorMessage = "Este campo es obligatorio.")]
-        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Solo se permiten letras en este campo.")]
+        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Solo se permiten letras en este campo.")]
         public string? Nombre { get; set; }
 
         [Required(ErrorMessage = "Este campo es obligatorio.")]
