@@ -1,0 +1,145 @@
+﻿@page "/Tecnicos/Index"
+@inject TecnicoServices tecnicoServices
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Index</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header text-center">
+            <h2><strong>Registro T&eacute;cnicos</strong></h2>
+        </div>
+        @*Boby*@
+        <div class="card-body">
+            <div class="row">
+                @*Filtrar por*@
+                <div class="col-3">
+                    <label class="col-form-label"><strong>Filtrar por:</strong></label>
+                </div>
+                @*ValorFiltrado*@
+                <div class="col-3">
+                    <label class="form-label"><strong>Buscar</strong></label>
+                </div>
+            </div>
+            @*Input y botones*@
+            <div class="row">
+                @*Filtro*@
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="">Elija una opci&omicron;n</option>
+                        <option value="ID">ID</option>
+                        <option value="Nombre">Nombre</option>                 
+                    </InputSelect>
+                </div>
+                @*Buscar*@
+                <div class="col-3">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltrado" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick=Buscar> Buscar</button>
+                    </div>
+                </div>
+
+                @*Restablecer*@
+                <div class="col-auto">
+                    <button type="button" class="btn btn-outline-secondary bi bi-arrow-clockwise" @onclick=Restablecer></button>
+                </div>
+
+                @*Crear*@
+                <div class="col text-end">
+                    <a href="Tecnico/Create"><button type="button" class="btn btn-success">Crear</button></a>
+                </div>
+            </div>
+         
+            @*Tabla*@
+            <table class="table table-bordered text-center mt-4">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Sueldo por Hora</th>
+                        <th>Observar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var Tecnico in ListarTecnico)
+                    {
+                        <tr>
+                            <td>@Tecnico.TecnicoId</td>
+                            <td>@Tecnico.Nombre</td>
+                            <td>@Tecnico.SueldoHora.ToString("C", CultureInfo.CreateSpecificCulture("en-US")) </td>
+                            @*Observar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-primary bi-eye" @onclick="() => PantallaObservar(Tecnico.TecnicoId)"></button>
+                            </td>
+                            @*Editar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-warning bi bi-pen" @onclick="() => PantallaEditar(Tecnico.TecnicoId)"></button>
+                            </td>
+                            @*Eliminar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => PantallaEliminar(Tecnico.TecnicoId)"></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <p><strong>Cantidad de tecnicos: </strong>@ListarTecnico.Count</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Tecnicos> ListarTecnico { get; set; } = new List<Tecnicos>();
+    public string Filtro = string.Empty;
+    public string ValorFiltrado = string.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListarTecnico = await tecnicoServices.Listar(t => true);
+    }
+
+    public async Task Buscar()
+    {
+        if (ValorFiltrado.Trim() != "")
+        {
+            if (Filtro == "ID" && int.TryParse(ValorFiltrado, out int tecnicoId))
+                ListarTecnico = await tecnicoServices.Listar(t => t.TecnicoId == tecnicoId);
+            else if (Filtro == "Nombre")
+                ListarTecnico = await tecnicoServices.Listar(t => t.Nombre.ToLower().Contains(ValorFiltrado.ToLower()));
+            else if (Filtro == "Sueldo Hora" && decimal.TryParse(ValorFiltrado, out decimal sueldoHora))
+                ListarTecnico = await tecnicoServices.Listar(t => t.SueldoHora == sueldoHora);
+        }
+        else
+        {
+            ListarTecnico = await tecnicoServices.Listar(t => true);
+        }
+    }
+
+    public async Task Restablecer()
+    {
+        ListarTecnico = await tecnicoServices.Listar(t => true);
+        Filtro = string.Empty;
+        ValorFiltrado = string.Empty;
+    }
+
+    public void PantallaEditar(int id)
+    {
+        navigationManager.NavigateTo($"Tecnico/Edit/{id}");
+    }
+    public void PantallaEliminar(int id)
+    {
+        navigationManager.NavigateTo($"Tecnico/Detele/{id}");
+    }
+    public void PantallaObservar(int id)
+    {
+        navigationManager.NavigateTo($"Tecnico/Details/{id}");
+    }
+}
