@@ -1,0 +1,83 @@
+﻿@page "/Tecnico/Create"
+@inject TecnicoServices tecnicoServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Create</PageTitle>
+<EditForm Model="tecnico">
+    <DataAnnotationsValidator/>
+    <div class="container">
+        <div class="shadow-lg">
+            @*Header*@
+            <div class="card-header">
+                <h1><strong>Crear técnico</strong></h1>
+            </div>
+            @*Body*@
+            <div class="card-body">
+                @*TecnicoId*@
+                <div class="col-3">
+                    <label class="form-label"><strong>Técnico Id</strong></label>
+                    <div class="id-input">
+                        <InputNumber class="form-control" readonly @bind-Value=tecnico.TecnicoId></InputNumber>
+                    </div>
+                </div>
+                @*Nombre*@
+                <div class="col-3 mt-2">
+                    <label class="form-label"><strong>Nombre</strong></label>
+                    <InputText class="form-control" @bind-Value="tecnico.Nombre"></InputText>
+                    <ValidationMessage For="(()=>tecnico.Nombre)"/>
+                </div>
+                @*SueldoHora*@
+                <div class="col-3 mt-2">
+                    <label class="=form-label"><strong>Sueldo por hora</strong></label>
+                    <InputNumber class="form-control" @bind-Value=tecnico.SueldoHora></InputNumber>
+                    <ValidationMessage For="(()=> tecnico.SueldoHora)"/>
+                </div>
+            </div>
+
+            @*Footer*@
+            <div class="card-footer text-">
+                <button type="button" class="btn btn-primary" @onclick="Volver">Volver</button>
+                <button type="button" class="btn btn-success" @onclick="() => Guardar()">Guardar</button>
+            </div>
+        </div>
+        @Mensaje
+    </div>
+</EditForm>
+
+@code {
+    public Tecnicos tecnico { get; set; } = new Tecnicos();
+    public string Mensaje = string.Empty;
+
+    private async Task<bool> Validar()
+    {
+        var existe = await tecnicoServices.ExisteTecnico(tecnico.TecnicoId, tecnico.Nombre);
+        return existe;
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/Tecnicos/Index");
+    }
+
+    public async Task Guardar()
+    {
+        if (await Validar())
+        {
+            Mensaje = "Ya existe un tecnico con este nombre.";
+            return;
+        }
+
+        var crear = await tecnicoServices.Guardar(tecnico);
+
+        if (crear)
+        {
+            Mensaje = "Se ha creado correctamente";
+            Volver();
+        }
+        else
+        {
+            Mensaje = "No se puedo crear el tecnico";
+        }
+    }
+}
