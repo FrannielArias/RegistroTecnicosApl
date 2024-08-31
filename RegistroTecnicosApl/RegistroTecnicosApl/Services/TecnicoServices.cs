@@ -49,22 +49,22 @@ public class TecnicoServices
     {
         return await _contexto .Tecnicos
             .AsNoTracking()
-            .Where(e => e.TecnicoId == tecnico.TecnicoId)
+            .Where(t => t.TecnicoId == tecnico.TecnicoId)
             .ExecuteDeleteAsync() > 0;
     }
 
     public async Task<bool> ExisteTecnico(int tecnicoId, string nombre)
     {
         return await _contexto.Tecnicos
-            .AnyAsync(e => e.TecnicoId != tecnicoId
-            && e.Nombre.ToLower().Equals(nombre.ToLower()));
+            .AnyAsync(t => t.TecnicoId != tecnicoId
+            && t.Nombre.ToLower().Equals(nombre.ToLower()));
     }
 
-    public async Task<Tecnicos?> Buscar(int TecnicoId)
+    public async Task<Tecnicos?> Buscar(int tecnicoId)
     {
         return await _contexto.Tecnicos
             .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.TecnicoId == TecnicoId);
+            .FirstOrDefaultAsync(t => t.TecnicoId == tecnicoId);
     }
 
     public async Task<List<Tecnicos>> Listar(Expression<Func<Tecnicos, bool>> criterio)
