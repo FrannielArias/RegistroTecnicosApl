@@ -14,14 +14,14 @@ namespace RegistroTecnicosApl.Migrations
                 name: "Tecnicos",
                 columns: table => new
                 {
-                    EstudianteId = table.Column<int>(type: "INTEGER", nullable: false)
+                    TecnicoId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Nombre = table.Column<string>(type: "TEXT", nullable: false),
                     SueldoHora = table.Column<decimal>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tecnicos", x => x.EstudianteId);
+                    table.PrimaryKey("PK_Tecnicos", x => x.TecnicoId);
                 });
         }
 
