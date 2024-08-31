@@ -1,0 +1,67 @@
+﻿@page "/Tecnico/Detele/{TecnicoId:int}"
+@inject TecnicoServices tecnicoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Eliminar</PageTitle>
+
+<div class="container">
+    <div class="shadow-lg">
+        <div class="card-header">
+            <h3>Eliminar técnico</h3>
+        </div>
+        <div class="card-body">
+            <h5>Detalle del tecnico</h5>
+
+            <dl class="row">
+                @*TecnicoId*@
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@tecnico.TecnicoId</dd>
+                @*Nombre*@
+                <dt class="col-sm-3">Nombre:</dt>
+                <dd class="col-sm-9">@tecnico.Nombre</dd>
+                @*SueldoHora*@
+                <dt class="col-sm-3">Sueldo por hora:</dt>
+                <dd class="col-sm-9">@tecnico.SueldoHora</dd>
+            </dl>
+
+        </div>
+        <div class="card-footer">
+            <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
+            <button type="button" class="btn btn-danger bi bi-trash3" @onclick="Eliminar">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int TecnicoId { get; set; }
+
+    public Tecnicos tecnico { get; set; } = new Tecnicos();
+    public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tecnico = await tecnicoService.Buscar(TecnicoId);
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminar = await tecnicoService.Eliminar(tecnico);
+
+        if (eliminar)
+        {
+            Mensaje = "El tecnico ha sido eliminado.";
+            Volver();
+        }
+        else
+        {
+            Mensaje = "No se a podido eliminar al tecnico.";
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("Tecnicos/Index");
+    }
+}
