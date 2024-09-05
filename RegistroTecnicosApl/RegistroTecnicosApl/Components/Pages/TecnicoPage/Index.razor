@@ -50,7 +50,7 @@
                 <div class="col text-end">
                     <a href="Tecnico/Create"><button type="button" class="btn btn-success">Crear</button></a>
                 </div>
-            </div>
+            </div>  
          
             @*Tabla*@
             <table class="table table-bordered text-center mt-4">
@@ -69,7 +69,7 @@
                     {
                         <tr>
                             <td>@Tecnico.TecnicoId</td>
-                            <td>@Tecnico.Nombre</td>
+                            <td>@Tecnico.Nombres</td>
                             <td>@Tecnico.SueldoHora.ToString("C", CultureInfo.CreateSpecificCulture("en-US")) </td>
                             @*Observar*@
                             <td>
@@ -97,8 +97,8 @@
 
 @code {
     public List<Tecnicos> ListarTecnico { get; set; } = new List<Tecnicos>();
-    public string Filtro = string.Empty;
-    public string ValorFiltrado = string.Empty;
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltrado { get; set; } = string.Empty;
 
 
     protected override async Task OnInitializedAsync()
@@ -113,7 +113,7 @@
             if (Filtro == "ID" && int.TryParse(ValorFiltrado, out int tecnicoId))
                 ListarTecnico = await tecnicoServices.Listar(t => t.TecnicoId == tecnicoId);
             else if (Filtro == "Nombre")
-                ListarTecnico = await tecnicoServices.Listar(t => t.Nombre.ToLower().Contains(ValorFiltrado.ToLower()));
+                ListarTecnico = await tecnicoServices.Listar(t => t.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
             else if (Filtro == "Sueldo Hora" && decimal.TryParse(ValorFiltrado, out decimal sueldoHora))
                 ListarTecnico = await tecnicoServices.Listar(t => t.SueldoHora == sueldoHora);
         }
