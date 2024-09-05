@@ -26,8 +26,8 @@
                 @*Nombre*@
                 <div class="col-3">
                     <label class="form-label"><strong>Nombre</strong></label>
-                    <InputText class="form-control" @bind-Value="tecnico.Nombre"></InputText>
-                    <ValidationMessage For="(()=>tecnico.Nombre)" />
+                    <InputText class="form-control" @bind-Value="tecnico.Nombres"></InputText>
+                    <ValidationMessage For="(()=>tecnico.Nombres)" />
                 </div>
                 @*SueldoHora*@
                 <div class="col-3">
@@ -50,7 +50,7 @@
     [Parameter]
     public int TecnicoId { set; get; }
     public Tecnicos tecnico { set; get; } = new Tecnicos();
-    public string Mensaje = string.Empty;
+    public string Mensaje { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,7 +86,7 @@
 
     public async Task<bool> Validar()
     {
-        var existe = await tecnicoService.ExisteTecnico(tecnico.TecnicoId, tecnico.Nombre);
+        var existe = await tecnicoService.ExisteTecnico(tecnico.TecnicoId, tecnico.Nombres);
         return existe;
     }
 }
