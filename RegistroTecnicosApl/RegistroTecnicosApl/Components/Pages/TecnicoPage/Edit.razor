@@ -4,7 +4,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>Editar</PageTitle>
-<EditForm Model="tecnico">
+<EditForm Model="tecnico" OnValidSubmit="Modificar">
     <DataAnnotationsValidator/>
     <div class="container">
         <div class="shadow-lg">
@@ -39,7 +39,7 @@
             @*Footer*@
             <div class="card-footer">
                 <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
-                <button type="button" class="btn btn-success" @onclick=Modificar>Guardar cambios</button>
+                <button type="submit" class="btn btn-success">Guardar cambios</button>
             </div>
         </div>
         @Mensaje

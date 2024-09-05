@@ -4,7 +4,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>Create</PageTitle>
-<EditForm Model="tecnico">
+<EditForm Model="tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator/>
     <div class="container">
         <div class="shadow-lg">
@@ -38,7 +38,7 @@
             @*Footer*@
             <div class="card-footer text-">
                 <button type="button" class="btn btn-primary" @onclick="Volver">Volver</button>
-                <button type="button" class="btn btn-success" @onclick="() => Guardar()">Guardar</button>
+                <button type="submit" class="btn btn-success" >Guardar</button>
             </div>
         </div
     </div>
