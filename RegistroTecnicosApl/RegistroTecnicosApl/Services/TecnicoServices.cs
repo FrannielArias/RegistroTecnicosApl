@@ -57,7 +57,7 @@ public class TecnicoServices
     {
         return await _contexto.Tecnicos
             .AnyAsync(t => t.TecnicoId != tecnicoId
-            && t.Nombre.ToLower().Equals(nombre.ToLower()));
+            && t.Nombres.ToLower().Equals(nombre.ToLower()));
     }
 
     public async Task<Tecnicos?> Buscar(int tecnicoId)
