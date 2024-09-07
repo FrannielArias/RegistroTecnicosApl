@@ -1,5 +1,6 @@
 ﻿@page "/Tecnico/Create"
 @inject TecnicoServices tecnicoServices
+@inject TiposTecnicosServices tipoTecnicoServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -27,8 +28,19 @@
                     <InputText class="form-control" @bind-Value="tecnico.Nombres"></InputText>
                     <ValidationMessage For="(()=>tecnico.Nombres)"/>
                 </div>
+                @*TipoTecnico*@
+                <div class="col-3 mt-3">
+                    <label class="form-label"><strong>TipoTecnico</strong></label>
+                    <InputSelect class="form-select" @bind-Value="tecnico.TipoTecnicoId">
+                        <option value="0" selected disabled>Seleccione un tipo tecnico</option>
+                        @foreach(var tipoTecnico in ListarTipoTecnico)
+                        {
+                            <option value="@tipoTecnico.TipoTecnicoId">@tipoTecnico.Descripcion</option>
+                        }
+                    </InputSelect>
+                </div>
                 @*SueldoHora*@
-                <div class="col-3 mt-2">
+                <div class="col-3 mt-3">
                     <label class="=form-label"><strong>Sueldo por hora</strong></label>
                     <InputNumber class="form-control" @bind-Value=tecnico.SueldoHora></InputNumber>
                     <ValidationMessage For="(()=> tecnico.SueldoHora)"/>
@@ -48,7 +60,13 @@
 
 @code {
     public Tecnicos tecnico { get; set; } = new Tecnicos();
+    public List<TiposTecnicos> ListarTipoTecnico { get; set; } = new List<TiposTecnicos>();
     public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListarTipoTecnico = await tipoTecnicoServices.Listar(t => true); 
+    }
 
     private async Task<bool> Validar()
     {
@@ -73,12 +91,13 @@
 
         if (crear)
         {
-            Mensaje = "Se ha creado correctamente";
+            Mensaje = "Se ha creado correctamente.";
+            await Task.Delay(2000);
             Volver();
         }
         else
         {
-            Mensaje = "No se puedo crear el tecnico";
+            Mensaje = "No se pudo crear el tecnico";
         }
     }
 }
