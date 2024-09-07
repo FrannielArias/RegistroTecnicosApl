@@ -1,5 +1,6 @@
 ﻿@page "/Tecnico/Details/{TecnicoId:int}"
 @inject TecnicoServices tecnicoService
+@inject TiposTecnicosServices tipoTecnicoService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -20,6 +21,9 @@
                 @*Nombre*@
                 <dt class="col-sm-3">Nombre:</dt>
                     <dd class="col-sm-9">@tecnico.Nombres</dd>
+                @*TipoTecnico*@
+                <dt class="col-sm-3">TipoTecnico:</dt>
+                    <dd class="col-sm-9">@tecnico.TipoTecnico.Descripcion</dd>
                 @*Sueldo por hora*@
                 <dt class="col-sm-3">Sueldo por hora:</dt>
                     <dd class="col-sm-9">@tecnico.SueldoHora</dd>
