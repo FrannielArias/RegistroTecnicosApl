@@ -1,5 +1,6 @@
 ﻿@page "/Tecnicos/Index"
 @inject TecnicoServices tecnicoServices
+@inject TiposTecnicosServices tipoTecnicoService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
 @rendermode InteractiveServer
@@ -48,7 +49,7 @@
 
                 @*Crear*@
                 <div class="col text-end">
-                    <a href="Tecnico/Create"><button type="button" class="btn btn-success">Crear</button></a>
+                    <a href="Tecnico/Create"><button type="button" class="btn btn-success bi bi-person-plus"> Crear</button></a>
                 </div>
             </div>  
          
@@ -56,8 +57,9 @@
             <table class="table table-bordered text-center mt-4">
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>Tecnico Id</th>
                         <th>Nombre</th>
+                        <th>Tipo Tecnico</th>
                         <th>Sueldo por Hora</th>
                         <th>Observar</th>
                         <th>Editar</th>
@@ -65,23 +67,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var Tecnico in ListarTecnico)
+                    @foreach (var tecnico in ListarTecnico)
                     {
                         <tr>
-                            <td>@Tecnico.TecnicoId</td>
-                            <td>@Tecnico.Nombres</td>
-                            <td>@Tecnico.SueldoHora.ToString("C", CultureInfo.CreateSpecificCulture("en-US")) </td>
+                            <td>@tecnico.TecnicoId</td>
+                            <td>@tecnico.Nombres</td>
+                            <td>@tecnico.TipoTecnico.Descripcion</td>
+                            <td>@tecnico.SueldoHora.ToString("C", CultureInfo.CreateSpecificCulture("en-US")) </td>
                             @*Observar*@
                             <td>
-                                <button type="button" class="btn btn-outline-primary bi-eye" @onclick="() => PantallaObservar(Tecnico.TecnicoId)"></button>
+                                <button type="button" class="btn btn-outline-primary bi-eye" @onclick="() => PantallaObservar(tecnico.TecnicoId)"></button>
                             </td>
                             @*Editar*@
                             <td>
-                                <button type="button" class="btn btn-outline-warning bi bi-pen" @onclick="() => PantallaEditar(Tecnico.TecnicoId)"></button>
+                                <button type="button" class="btn btn-outline-warning bi bi-pen" @onclick="() => PantallaEditar(tecnico.TecnicoId)"></button>
                             </td>
                             @*Eliminar*@
                             <td>
-                                <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => PantallaEliminar(Tecnico.TecnicoId)"></button>
+                                <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => PantallaEliminar(tecnico.TecnicoId)"></button>
                             </td>
                         </tr>
                     }
@@ -97,6 +100,7 @@
 
 @code {
     public List<Tecnicos> ListarTecnico { get; set; } = new List<Tecnicos>();
+    public List<TiposTecnicos> ListarTipoTecnico { get; set; } = new List<TiposTecnicos>();
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltrado { get; set; } = string.Empty;
 
@@ -104,6 +108,7 @@
     protected override async Task OnInitializedAsync()
     {
         ListarTecnico = await tecnicoServices.Listar(t => true);
+        ListarTipoTecnico = await tipoTecnicoService.Listar(t => true);
     }
 
     public async Task Buscar()
