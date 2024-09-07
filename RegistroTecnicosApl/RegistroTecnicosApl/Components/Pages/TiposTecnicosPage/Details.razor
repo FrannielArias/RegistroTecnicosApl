@@ -1,0 +1,48 @@
+﻿@page "/TipoTecnico/Details/{TipoTecnicoId:int}"
+@inject TiposTecnicosServices tipoTecnicoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Details Tipo Tecnico</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header">
+            <h3>Tipo T&eacute;nico</h3>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <h5>Detalle de Tipo técnico</h5>
+            <dl class="row mt-2">
+                @*TipoTecnicoId*@
+                <dt class="col-sm-3">Tipo TécnicoId:</dt>
+                <dd class="col-sm-9">@tipoTecnico.TipoTecnicoId</dd>
+                @*Descripcion*@
+                <dt class="col-sm-3">Descripcion:</dt>
+                <dd class="col-sm-9">@tipoTecnico.Descripcion</dd>
+            </dl>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            @*Boton volver*@
+            <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int TipoTecnicoId { get; set; }
+    public TiposTecnicos tipoTecnico { get; set; } = new TiposTecnicos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        tipoTecnico = await tipoTecnicoService.Buscar(TipoTecnicoId);
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("TipoTecnico/Index");
+    }
+}
