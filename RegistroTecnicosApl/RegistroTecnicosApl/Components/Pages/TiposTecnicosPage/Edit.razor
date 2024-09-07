@@ -1,0 +1,85 @@
+﻿@page "/TipoTecnico/Edit/{TipoTecnicoId:int}"
+@inject TiposTecnicosServices tipoTecnicoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Editar</PageTitle>
+<EditForm Model="tipoTecnico" OnValidSubmit="Modificar">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="shadow-lg">
+            @*Header*@
+            <div class="card-header">
+                <div class="text-center">
+                    <h3><strong>Editar Tipo t&eacute;cnico</strong></h3>
+                </div>
+            </div>
+            @*Body*@
+            <div class="card-body">
+                @*TipoTecnicoId*@
+                <div class="col-3">
+                    <label class="form-label"><strong>TipoTecnicoId</strong></label>
+                    <div class="id-input">
+                        <InputNumber class="form-control" readonly @bind-Value=tipoTecnico.TipoTecnicoId></InputNumber>
+                    </div>
+                </div>
+                @*Nombre*@
+                <div class="col-3">
+                    <label class="form-label"><strong>Nombre</strong></label>
+                    <InputText class="form-control" @bind-Value="tipoTecnico.Descripcion"></InputText>
+                    <ValidationMessage For="(()=>tipoTecnico.Descripcion)" />
+                </div> 
+            </div>
+            @*Footer*@
+            <div class="card-footer">
+                <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
+                <button type="submit" class="btn btn-success">Modificar</button>
+            </div>
+        </div>
+        @Mensaje
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int TipoTecnicoId { set; get; }
+    public TiposTecnicos tipoTecnico { set; get; } = new TiposTecnicos();
+    public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tipoTecnico = await tipoTecnicoService.Buscar(TipoTecnicoId);
+    }
+
+    public async Task Modificar()
+    {
+        if (await Validar())
+        {
+            Mensaje = "Ya existe un Tipo Tecnico con esta descripcion.";
+            return;
+        }
+
+        var modificar = await tipoTecnicoService.Guardar(tipoTecnico);
+        if (modificar)
+        {
+            Mensaje = "Se ha modificado el Tipo tecnico exitosamente.";
+            await Task.Delay(3000);
+            Volver();
+        }
+        else
+        {
+            Mensaje = "El tecnico no se pudo modificar";
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("TipoTecnico/Index");
+    }
+
+    public async Task<bool> Validar()
+    {
+        var existe = await tipoTecnicoService.ExisteTiposTecnico(tipoTecnico.TipoTecnicoId, tipoTecnico.Descripcion);
+        return existe;
+    }
+}
