@@ -1,11 +1,12 @@
 ﻿@page "/Tecnico/Edit/{TecnicoId:int}"
 @inject TecnicoServices tecnicoService
+@inject TiposTecnicosServices tipoTecnicoService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
 <PageTitle>Editar</PageTitle>
 <EditForm Model="tecnico" OnValidSubmit="Modificar">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     <div class="container">
         <div class="shadow-lg">
             @*Header*@
@@ -29,6 +30,17 @@
                     <InputText class="form-control" @bind-Value="tecnico.Nombres"></InputText>
                     <ValidationMessage For="(()=>tecnico.Nombres)" />
                 </div>
+                @*TipoTecnico*@
+                <div class="col-3 mt-3">
+                    <label class="form-label"><strong>TipoTecnico</strong></label>
+                    <InputSelect class="form-select" @bind-Value="tecnico.TipoTecnicoId">
+                        <option value="0" selected disabled>Seleccione un tipo tecnico</option>
+                        @foreach (var tipoTecnico in ListarTipoTecnico)
+                        {
+                            <option value="@tipoTecnico.TipoTecnicoId">@tipoTecnico.Descripcion</option>
+                        }
+                    </InputSelect>
+                </div>
                 @*SueldoHora*@
                 <div class="col-3">
                     <label class="=form-label"><strong>Sueldo por hora</strong></label>
@@ -39,7 +51,7 @@
             @*Footer*@
             <div class="card-footer">
                 <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
-                <button type="submit" class="btn btn-success">Guardar cambios</button>
+                <button type="submit" class="btn btn-success">Modificar</button>
             </div>
         </div>
         @Mensaje
@@ -49,14 +61,15 @@
 @code {
     [Parameter]
     public int TecnicoId { set; get; }
+    public List<TiposTecnicos> ListarTipoTecnico = new List<TiposTecnicos>();
     public Tecnicos tecnico { set; get; } = new Tecnicos();
     public string Mensaje { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         tecnico = await tecnicoService.Buscar(TecnicoId);
+        ListarTipoTecnico = await tipoTecnicoService.Listar(t => true);
     }
-
 
     public async Task Modificar()
     {
@@ -67,15 +80,16 @@
         }
 
         var modificar = await tecnicoService.Guardar(tecnico);
+
         if (modificar)
         {
-            Mensaje = "Se ha modificado el tecnico exitosamente.";
+            Mensaje = "Se ha modificado el tecnico correctamente.";
             await Task.Delay(2000);
             Volver();
         }
         else
         {
-            Mensaje = "El tecnico no se pudo modificar";
+            Mensaje = "No se pudo modificar el tecnico";
         }
     }
 
