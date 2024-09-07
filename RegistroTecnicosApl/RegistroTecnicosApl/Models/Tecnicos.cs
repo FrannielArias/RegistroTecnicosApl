@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RegistroTecnicosApl.Models
 {
@@ -12,7 +13,11 @@ namespace RegistroTecnicosApl.Models
         public string? Nombres { get; set; }
 
         [Required(ErrorMessage = "Este campo es obligatorio.")]
-        [Range(minimum: 0.1, maximum:9999999999,  ErrorMessage = "El monto debe ser mayor a 0 o es demasiado alto para el sistema")]
+        [Range(minimum: 0.1, maximum:9999999999,  ErrorMessage = "El monto debe ser mayor a 0.")]
         public decimal SueldoHora { get; set; }
+
+        [ForeignKey("TipoTecnicoId")]
+        public int TipoTecnicoId { get; set; }
+        public TiposTecnicos? TipoTecnico { get; set; }
     }
 }
