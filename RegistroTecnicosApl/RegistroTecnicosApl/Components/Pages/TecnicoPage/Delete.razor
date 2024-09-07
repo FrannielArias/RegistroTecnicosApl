@@ -1,5 +1,6 @@
 ﻿@page "/Tecnico/Detele/{TecnicoId:int}"
 @inject TecnicoServices tecnicoService
+@inject TiposTecnicosServices tipoTecnicoServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -16,13 +17,16 @@
             <dl class="row">
                 @*TecnicoId*@
                 <dt class="col-sm-3">ID:</dt>
-                <dd class="col-sm-9">@tecnico.TecnicoId</dd>
+                    <dd class="col-sm-9">@tecnico.TecnicoId</dd>
                 @*Nombre*@
                 <dt class="col-sm-3">Nombre:</dt>
-                <dd class="col-sm-9">@tecnico.Nombres</dd>
+                    <dd class="col-sm-9">@tecnico.Nombres</dd>
+                @*TipoTecnico*@
+                <dt class="col-sm-3">Tipo Tecnico:</dt>
+                <dd class="col-sm-9">@tecnico?.TipoTecnico?.Descripcion</dd>
                 @*SueldoHora*@
                 <dt class="col-sm-3">Sueldo por hora:</dt>
-                <dd class="col-sm-9">@tecnico.SueldoHora</dd>
+                    <dd class="col-sm-9">@tecnico.SueldoHora</dd>
             </dl>
 
         </div>
@@ -36,7 +40,6 @@
 @code {
     [Parameter]
     public int TecnicoId { get; set; }
-
     public Tecnicos tecnico { get; set; } = new Tecnicos();
     public string Mensaje { get; set; } = string.Empty;
 
@@ -62,6 +65,6 @@
 
     public void Volver()
     {
-        navigationManager.NavigateTo("Tecnicos/Index");
+        navigationManager.NavigateTo("TipoTecnico/Index");
     }
 }
