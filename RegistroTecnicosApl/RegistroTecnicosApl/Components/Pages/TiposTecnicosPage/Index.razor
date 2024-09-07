@@ -1,0 +1,85 @@
+﻿@page "/TipoTecnico/Index"
+@inject TiposTecnicosServices tipoTecnicoServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Index TipoTecnico</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header">
+            <div class="text-center">
+                <h2><strong>Registro de Tipos de T&eacute;cnicos</strong></h2>
+            </div>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            @*Boton crear*@
+            <div class="col text-end">
+                <a href="TipoTecnico/Create"><button type="button" class="btn btn-success bi bi-person-plus"> Crear</button></a>
+            </div>
+            @*Tabla*@
+            <table class="table table-bordered text-center mt-4">
+                <thead>
+                    <tr>
+                        <th>TipoTecnicoId</th>
+                        <th>Descripcion</th>
+                        <th>Observar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tipoTecnico in ListaTiposTecnicos)
+                    {
+                        <tr>
+                            <td>@tipoTecnico.TipoTecnicoId</td>
+                            <td>@tipoTecnico.Descripcion</td>
+                            @*Observar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-primary bi-eye" @onclick="() => PantallaObservar(tipoTecnico.TipoTecnicoId)"></button>
+                            </td>
+                            @*Editar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-warning bi bi-pen" @onclick="() => PantallaEditar(tipoTecnico.TipoTecnicoId)"></button>
+                            </td>
+                            @*Eliminar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => PantallaEliminar(tipoTecnico.TipoTecnicoId)"></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <p><strong>Cantidad de tipos de tecnicos: </strong>@ListaTiposTecnicos.Count</p>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaTiposTecnicos = await tipoTecnicoServices.Listar(t => true);
+    }
+
+    public void PantallaObservar(int id)
+    {
+        navigationManager.NavigateTo($"TipoTecnico/Details/{id}");
+    }
+
+    public void PantallaEliminar(int id)
+    {
+        navigationManager.NavigateTo($"TipoTecnicos/Delete{id}");
+    }
+
+    public void PantallaEditar(int id)
+    {
+        navigationManager.NavigateTo($"TipoTecnico/Edit/{id}");
+    }
+}
