@@ -29,9 +29,40 @@ namespace RegistroTecnicosApl.Migrations
                     b.Property<decimal>("SueldoHora")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("TipoTecnicoId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("TecnicoId");
 
+                    b.HasIndex("TipoTecnicoId");
+
                     b.ToTable("Tecnicos");
+                });
+
+            modelBuilder.Entity("RegistroTecnicosApl.Models.TiposTecnicos", b =>
+                {
+                    b.Property<int>("TipoTecnicoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("TipoTecnicoId");
+
+                    b.ToTable("TiposTecnicos");
+                });
+
+            modelBuilder.Entity("RegistroTecnicosApl.Models.Tecnicos", b =>
+                {
+                    b.HasOne("RegistroTecnicosApl.Models.TiposTecnicos", "TipoTecnico")
+                        .WithMany()
+                        .HasForeignKey("TipoTecnicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipoTecnico");
                 });
 #pragma warning restore 612, 618
         }
