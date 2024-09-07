@@ -1,0 +1,65 @@
+﻿@page "/TipoTecnicos/Delete{TipoTecnicoId:int}"
+@inject TiposTecnicosServices tipoTecnicoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Delete Tipo Tecnico</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header">
+            <div class="text-center">
+                <h2><strong>Eliminar Tipo Tecnico</strong></h2>
+            </div>
+        </div>
+        @*body*@
+        <div class="card-body">
+            <dl class="row">
+                <h5>Detalle del Tipo Tecnico</h5>
+                @*TipoTecnicoId*@
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@tipoTecnico.TipoTecnicoId</dd>
+                @*Nombre*@
+                <dt class="col-sm-3">Nombre:</dt>
+                <dd class="col-sm-9">@tipoTecnico.Descripcion</dd>
+            </dl>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
+            <button type="button" class="btn btn-danger bi bi-trash3" @onclick=Eliminar>Eliminar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int TipoTecnicoId { get; set; }
+    public TiposTecnicos tipoTecnico { get; set; } = new TiposTecnicos();
+    public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tipoTecnico = await tipoTecnicoService.Buscar(TipoTecnicoId);
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("TipoTecnico/Index");
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminar = await tipoTecnicoService.Eliminar(tipoTecnico);
+
+        if (eliminar)
+        {
+            Mensaje = "Se ha eliminado el Tipo Tecnico con exito.";
+            Volver();
+        }
+        else
+        {
+            Mensaje = "No se pudo eliminar el Tipo Tecnico.";
+        }
+    }
+}
