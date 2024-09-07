@@ -1,0 +1,78 @@
+﻿@page "/TipoTecnico/Create"
+@inject TiposTecnicosServices tipoTecnicoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Crear TipoTecnico</PageTitle>
+<EditForm Model="tipoTecnico" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator/>
+    <div class="container">
+        <div class="shadow-lg">
+
+            @*Header*@
+            <div class="card-header">
+                <div class="text-center">
+                    <h2><strong>Crear tipo de tecnico</strong></h2>
+                </div>
+            </div>
+            @*Body*@
+            <div class="card-body">
+                @*TipoTecnicoId*@
+                <div class="col-3 mt-2">
+                    <label class="form-label"><strong>TipoTecnicoId</strong></label>
+                    <div class="id-input">
+                        <InputNumber class="form-control" @bind-Value=tipoTecnico.TipoTecnicoId></InputNumber>
+                    </div>
+                </div>
+                @*Descripcion*@
+                <div class="col-3 mt-2">
+                    <label class="form-label"><strong>Descripci&oacute;n</strong></label>
+                    <InputText class="form-control" @bind-Value=tipoTecnico.Descripcion></InputText>
+                    <ValidationMessage For="(() => tipoTecnico.Descripcion)" />
+                </div>
+            </div>
+
+            @*footer*@
+            <div class="card-footer">
+                <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public TiposTecnicos tipoTecnico { get; set; } = new TiposTecnicos();
+    public string Mensaje { get; set; } = string.Empty;
+
+    private void Volver()
+    {
+        navigationManager.NavigateTo("TipoTecnico/Index");
+    }
+
+    private async Task<bool> Validar()
+    {
+        var existe = await tipoTecnicoService.ExisteTiposTecnico(tipoTecnico.TipoTecnicoId, tipoTecnico.Descripcion);
+        return existe;
+    }
+
+    public async Task Guardar()
+    {
+        if(await Validar())
+        {
+            Mensaje = "Ya existe un tipo tecnico con esa descripcion.";
+        }
+
+        var crear = await tipoTecnicoService.Guardar(tipoTecnico);
+
+        if (crear)
+        {
+            Mensaje = "Se ha creado correctamente.";
+            Volver();
+        }
+        else
+        {
+            Mensaje = "No se pudo crear el tipoTecnico.";
+        }
+    }
+}
