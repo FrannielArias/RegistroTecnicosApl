@@ -67,6 +67,14 @@ public class TecnicoServices
             .FirstOrDefaultAsync(t => t.TecnicoId == tecnicoId);
     }
 
+    public async Task<Tecnicos?> BuscarTipo(int tecnicoId)
+    {
+        return await _contexto.Tecnicos
+            .Include(t => t.TipoTecnico)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.TecnicoId == tecnicoId);
+    }
+
     public async Task<List<Tecnicos>> Listar(Expression<Func<Tecnicos, bool>> criterio)
     {
         return await _contexto.Tecnicos
