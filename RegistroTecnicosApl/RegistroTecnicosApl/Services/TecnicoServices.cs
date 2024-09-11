@@ -64,7 +64,6 @@ public class TecnicoServices
     {
         return await _contexto.Tecnicos
             .AsNoTracking()
-            .Include(t => t.TipoTecnico)
             .FirstOrDefaultAsync(t => t.TecnicoId == tecnicoId);
     }
 
