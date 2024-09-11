@@ -45,7 +45,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        tecnico = await tecnicoService.Buscar(TecnicoId);
+        tecnico = await tecnicoService.BuscarTipo(TecnicoId);
     }
 
     public async Task Eliminar()
@@ -65,6 +65,6 @@
 
     public void Volver()
     {
-        navigationManager.NavigateTo("TipoTecnico/Index");
+        navigationManager.NavigateTo("Tecnicos/Index");
     }
 }
