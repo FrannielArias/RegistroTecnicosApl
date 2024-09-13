@@ -1,0 +1,150 @@
+﻿@page "/Cliente/Index"
+@inject ClientesServices clienteService
+@inject NavigationManager navigationManager 
+@rendermode InteractiveServer
+
+<PageTitle>Index</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header">
+            <div class="text-center">
+                <h2><strong>Clientes</strong></h2>
+            </div>
+        </div>
+        @*Body*@
+        <div class="card-body">
+
+            <div class="row">
+                @*Filtrar por*@
+                <div class="col-3">
+                    <label>Filtrar por:</label>
+                </div>
+                @*ValorFiltrado*@
+                <div class="col-3">
+                    <label>Buscar</label>
+                </div>
+            </div>
+            @*Filtro y buscar*@
+            <div class="row">
+                @*Filtro*@
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="ID">Elija una opci&omicron;n</option>
+                        <option value="Nombres">Nombres</option>
+                    </InputSelect>
+                </div>
+                @*Buscar*@
+                <div class="col-3">
+                    <div class="input-group">
+                        <input class="form-control" @bind-value="ValorFiltrado" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick=Buscar>Buscar</button>
+                    </div>
+                </div>
+                @*Restablecer*@
+                <div class="col-3">
+                    <button type="button" class="btn btn-outline-secondary bi bi-arrow-clockwise" @onclick=Restablecer></button>
+                </div>
+
+                @*Crear*@
+                <div class="col-3 text-end">
+                    <a href="Cliente/Create"><button type="button" class="btn btn-success bi bi-person-plus"> Create</button></a>
+                </div>
+            </div>
+
+            @*Tabla*@
+            <table class="table table-bordered text-center mt-4">
+                <thead>
+                    <tr>
+                        <th>ClienteId</th>
+                        <th>Nombres</th>
+                        <th>WhatsApp</th>
+                        <th>Observar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var cliente in ListarClientes)
+                    {
+                        <tr>
+                            <td>@cliente.ClienteId</td>
+                            <td>@cliente.Nombres</td>
+                            <td>@cliente.WhatsApp</td>
+                            @*Observar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-primary  bi-eye" @onclick="() => PantallaObservar(cliente.ClienteId)"></button>
+                            </td>
+                            @*Editar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-success bi bi-pen" @onclick="() => PantallaEditar(cliente.ClienteId)"></button>
+                            </td>
+                            @*Eliminar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => PantallaEliminar(cliente.ClienteId)"></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @*footer*@
+        <div class="card-footer">
+            <p><strong>Cantidad de clientes: </strong>@ListarClientes.Count</p>
+        </div>
+    </div>
+</div>
+@code {
+    public Clientes clientes { set; get; } = new Clientes();
+    public List<Clientes> ListarClientes { set; get; } = new List<Clientes>();
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltrado { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListarClientes = await clienteService.Listar(c => true);
+    }
+
+    public async Task Buscar()
+    {
+        if (ValorFiltrado.Trim() != "")
+        {
+            if (Filtro == "ID" && int.TryParse(ValorFiltrado, out int clienteID))
+                ListarClientes = await clienteService.Listar(c => c.ClienteId == clienteID);
+            else if (Filtro == "Nombre")
+                ListarClientes = await clienteService.Listar(c => c.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
+        }
+        else
+        {
+            ListarClientes = await clienteService.Listar(c => true);
+        }
+    }
+
+    public async Task Restablecer()
+    {
+        ListarClientes = await clienteService.Listar(c => true);
+        ValorFiltrado = string.Empty;
+        Filtro = string.Empty;
+    }
+
+    public void PantallaCrear()
+    {
+        navigationManager.NavigateTo("Cliente/Create");
+    }
+
+    public void PantallaObservar(int id)
+    {
+        navigationManager.NavigateTo($"Cliente/Details/{id}");
+    }
+
+    public void PantallaEditar(int id)
+    {
+        navigationManager.NavigateTo($"Cliente/Edit/{id}");
+    }
+
+    public void PantallaEliminar(int id)
+    {
+        navigationManager.NavigateTo($"Cliente/Delete/{id}");
+    }
+}
