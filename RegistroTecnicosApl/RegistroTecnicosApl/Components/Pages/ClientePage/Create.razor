@@ -1,0 +1,85 @@
+﻿@page "/Cliente/Create"
+@inject ClientesServices clienteServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Create Clietes</PageTitle>
+<EditForm Model="Cliente" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator/>
+    <div class="container">
+        <div class="shadow-lg">
+            @*Header*@
+            <div class="card-header">
+                <div class="text-center">
+                    <h2><strong>Crear Cliente</strong></h2>
+                </div>
+            </div>
+            @*Body*@
+            <div class="card-body">
+                @*ClienteId*@
+                <div class="col-3 mt-3">
+                    <label class="form-label">ClienteId:</label>
+                    <div class="id-input">
+                        <InputNumber class="form-control" readonly @bind-Value="Cliente.ClienteId"></InputNumber>
+                    </div>
+                </div>
+                @*Nombre*@
+                <div class="col-3 mt3">
+                    <label class="form-label">Nombre:</label>
+                    <InputText class="form-control" @bind-Value="Cliente.Nombres"></InputText>
+                    <ValidationMessage For="() => Cliente.Nombres"/>
+                </div>
+                @*WhatsApp*@
+                <div class="col-3 mt-3">
+                    <label class="form-label">WhatsApp:</label>
+                    <InputText class="form-control" @bind-Value="Cliente.WhatsApp"></InputText>
+                    <ValidationMessage For="() => Cliente.WhatsApp"/>
+                </div>
+            </div>
+            @*Footer*@
+            <div class="card-footer">
+                <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+@Mensaje
+
+@code {
+    public Clientes Cliente { get; set; } = new Clientes();
+    public string Mensaje { get; set; } = string.Empty;
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("Cliente/Index");
+    }
+
+    private async Task<bool> Validar()
+    {
+        var existe = await clienteServices.ExisteCliente(Cliente.ClienteId, Cliente.Nombres, Cliente.WhatsApp);
+        return existe;
+    }
+
+    public async Task Guardar()
+    {
+        if (await Validar())
+        {
+            Mensaje = "Ya existe un cliente con este nombre.";
+            return;
+        }
+
+        var modificar = await clienteServices.Guardar(Cliente);
+
+        if (modificar)
+        {
+            Mensaje = "Se ha creado correctamente.";
+            await Task.Delay(2000);
+            Volver();
+        }
+        else
+        {
+            Mensaje = "No se pudo crear el cliente.";
+        }
+    }
+}
