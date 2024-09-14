@@ -30,8 +30,10 @@
                 @*Filtro*@
                 <div class="col-3">
                     <InputSelect class="form-select" @bind-Value="Filtro">
-                        <option value="ID">Elija una opci&omicron;n</option>
+                        <option value="">Elija una opci&omicron;n</option>
+                        <option value="ID">ID</option>
                         <option value="Nombres">Nombres</option>
+                        <option value="WatsApp">WatsApp</option>
                     </InputSelect>
                 </div>
                 @*Buscar*@
@@ -114,6 +116,8 @@
                 ListarClientes = await clienteService.Listar(c => c.ClienteId == clienteID);
             else if (Filtro == "Nombre")
                 ListarClientes = await clienteService.Listar(c => c.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
+            else if (Filtro == "WhatsApp")
+                ListarClientes = await clienteService.Listar(c => c.WhatsApp.ToLower().Contains(ValorFiltrado.ToLower()));
         }
         else
         {
