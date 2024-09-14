@@ -1,0 +1,76 @@
+﻿@page "/Trabajo/Delete/{TrabajoId:int}"
+@inject TrabajosServices trabajoService 
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Delete trabajo</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header">
+            <h3><strong>Eliminar trabajo</strong></h3>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <dl class="row">
+                @*TrabajoId*@
+                <dt class="col-sm-3">Id</dt>
+                    <dd class="col-sm-9">@Trabajo.TrabajoId</dd>
+                @*Fecha*@
+                <dt class="col-sm-3">Fecha:</dt>
+                    <dd class="col-sm-9">@Trabajo.Fecha</dd>
+                @*Cliente*@
+                <dt class="col-sm-3">Cliente:</dt>
+                    <dd class="col-sm-9">@Trabajo?.Cliente?.Nombres</dd>
+                @*Tecnico*@
+                <dt class="col-sm-3">Tecnico:</dt>
+                    <dd class="col-sm-9">@Trabajo?.tecnicos?.Nombres</dd>
+                @*Descripcion*@
+                <dt class="col-sm-3">Descripcion:</dt>
+                    <dd class="col-sm-9">@Trabajo?.Descripcion</dd>
+                @*Monto*@
+                <dt class="col-sm-3">Monto:</dt>
+                    <dd class="col-sm-9">@Trabajo?.Monto</dd>
+            </dl>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <button type="button" class="btn btn-secondary" @onclick="Volver">Volver</button>
+            <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+        </div>
+    </div>
+</div>
+@Mensaje
+
+@code {
+    [Parameter]
+    public int TrabajoId { get; set; }
+    public Trabajos Trabajo { get; set; } = new Trabajos();
+    public string Mensaje {get; set;} = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Trabajo = await trabajoService.BuscarTodo(TrabajoId);
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminar = await trabajoService.Eliminar(Trabajo);
+
+        if (eliminar)
+        {
+            Mensaje = "El Trabajo ha sido eliminado.";
+            await Task.Delay(2000);
+            Volver();
+        }
+        else
+        {
+            Mensaje = "No se a podido eliminar el Trabajo.";
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("Trabajo/Index");
+    }
+}
