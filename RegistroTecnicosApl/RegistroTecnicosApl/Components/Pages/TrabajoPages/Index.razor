@@ -1,0 +1,164 @@
+﻿@page "/Trabajo/Index"
+@inject TrabajosServices trabajoServices
+@inject NavigationManager navigationManager 
+@rendermode InteractiveServer
+
+<PageTitle>Index Trabajo</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header">
+            <div class="text-center">
+                <h2><strong>Resgistro de trabajos</strong></h2>
+            </div>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <div class="row">
+                @*Filtrar*@
+                <div class="col-3">
+                    <label class="col-form-label"><strong>Filtrar por</strong></label>
+                </div>
+                @*ValorFiltrado*@
+                <div class="col-3">
+                    <label class="form-label"><strong>Buscar</strong></label>
+                </div>
+            </div>
+            
+            <div class="row">
+                @*Filtro*@
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="">Elija una opci&omicron;n</option>
+                        <option value="ID">ID</option>
+                        <option value="ClienteId">ClienteId</option>
+                        <option value="NombreCliente">NombreCliente</option>
+                        <option value="TecnicoId">TecnicoId</option>
+                        <option value="NombreTecnico">NombreTecnico</option>
+                    </InputSelect>
+                </div>
+                @*Buscar*@
+                <div class="col-3">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltrado" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick=Buscar>Buscar</button>
+                    </div>
+                </div>
+
+                @*Restablecer*@
+                <div class="col-3">
+                    <button type="button" class="btn btn-outline-secondary bi bi-arrow-clockwise" @onclick=Restablecer></button>
+                </div>
+
+                @*Crear*@
+                <div class="col text-end">
+                    <a href="Trabajo/Create"><button type="button" class="btn btn-success bi bi-person-plus"> Crear</button></a>
+                </div>
+            </div>
+
+            <table class="table table-bordered text-center mt-4">
+                <thead>
+                    <tr>
+                        <th>TrabajoId</th>
+                        <th>Fecha</th>
+                        <th>ClienteId</th>
+                        <th>NombreCliente</th>
+                        <th>TecnicoId</th>
+                        <th>NombreTecnico</th>
+                        <th>Descripcion</th>
+                        <th>Monto</th>
+                        <th>Observar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var trabajo in ListarTrabajo)
+                    {
+                        <tr>
+                            <td>@trabajo.TrabajoId</td>
+                            <td>@trabajo.Fecha</td>
+                            <td>@trabajo.ClienteId</td>
+                            <td>@trabajo.Cliente.Nombres</td>
+                            <td>@trabajo.TecnicoId</td>
+                            <td>@trabajo.tecnicos.Nombres</td>
+                            <td>@trabajo.Descripcion</td>
+                            <td>@trabajo.Monto</td>
+                            @*Boton Observar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-primary bi bi-eye" @onclick="() => PantallaObservar(trabajo.TrabajoId)"></button>
+                            </td>
+                            @*Bonton Editar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-warning bi bi-pen " @onclick="() => PantallaEditar(trabajo.TrabajoId)"></button>
+                            </td>
+                            @*Boton Eliminar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => PantallaEliminar(trabajo.TrabajoId)"></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <p><strong>Cantidad de trabajos: </strong>@ListarTrabajo.Count</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Trabajos> ListarTrabajo { get; set; } = new List<Trabajos>();
+    public string ValorFiltrado = string.Empty;
+    public string Filtro = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListarTrabajo = await trabajoServices.Listar(t => true);
+    }
+
+    public async Task Buscar()
+    {
+        if (ValorFiltrado.Trim() != "" )
+        {
+            if (Filtro == "ID" && int.TryParse(ValorFiltrado, out int trabajoId))
+                ListarTrabajo = await trabajoServices.Listar(t => t.TrabajoId == trabajoId);
+            else if (Filtro == "ClienteId" && int.TryParse(ValorFiltrado, out int clienteId))
+                ListarTrabajo = await trabajoServices.Listar(c => c.ClienteId == clienteId);
+            else if (Filtro == "NombreCliente")
+                ListarTrabajo = await trabajoServices.Listar(c => c.Cliente.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
+            else if (Filtro == "TecnicoId" && int.TryParse(ValorFiltrado, out int tecnicoId))
+                ListarTrabajo = await trabajoServices.Listar(t => t.TecnicoId == tecnicoId);
+            else if (Filtro == "NombreTecnico")
+                ListarTrabajo = await trabajoServices.Listar(t => t.tecnicos.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
+        }
+        else
+        {
+            ListarTrabajo = await trabajoServices.Listar(t => true);
+        }
+    }
+
+    public async Task Restablecer()
+    {
+        ListarTrabajo = await trabajoServices.Listar(t => true);
+        ValorFiltrado = string.Empty;
+        Filtro = string.Empty;
+    }
+
+    public void PantallaObservar(int id)
+    {
+        navigationManager.NavigateTo($"/Trabajo/Details/{id}");
+    }
+
+    public void PantallaEditar(int id)
+    {
+        navigationManager.NavigateTo($"/Trabajo/Edit/{id}");
+    }
+
+    public void PantallaEliminar(int id)
+    {
+        navigationManager.NavigateTo($"/Trabajo/Delete/{id}");
+    }
+}
+
