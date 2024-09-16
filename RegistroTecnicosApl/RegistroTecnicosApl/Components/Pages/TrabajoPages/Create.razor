@@ -84,6 +84,11 @@
     {
         ListarCliente = await clienteService.Listar(c => true);
         ListarTecnico = await tecnicoService.Listar(t => true);
+
+        if (Trabajo.Fecha == default)
+        {
+            Trabajo.Fecha = DateTime.Now;
+        }
     }
 
     public void Volver()
