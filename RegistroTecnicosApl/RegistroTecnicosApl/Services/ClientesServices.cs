@@ -64,9 +64,11 @@ public class ClientesServices
     {
         return await _contexto.Clientes
             .AnyAsync(c => c.ClienteId != clienteId 
-            && c.Nombres.ToLower().Equals(nombre.ToLower())
-            || c.WhatsApp.ToLower().Equals(whatsApp.ToLower()));
+            && (c.Nombres.ToLower().Equals(nombre.ToLower())
+            || c.WhatsApp.ToLower().Equals(whatsApp.ToLower())));
     }
+
+
 
     public async Task<List<Clientes>> Listar(Expression<Func<Clientes, bool>> criterio)
     {
