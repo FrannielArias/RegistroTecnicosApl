@@ -83,7 +83,7 @@
                             <td>@trabajo.TecnicoId</td>
                             <td>@trabajo.tecnicos.Nombres</td>
                             <td>@trabajo.Descripcion</td>
-                            <td>@trabajo.Monto</td>
+                            <td>@trabajo.Monto.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))</td>
                             @*Boton Observar*@
                             <td>
                                 <button type="button" class="btn btn-outline-primary bi bi-eye" @onclick="() => PantallaObservar(trabajo.TrabajoId)"></button>
