@@ -36,6 +36,7 @@
                     <InputText class="form-control" @bind-Value="tiempoString" @oninput="OnTiempoChanged" placeholder="Ej: 10:30" />
                     <ValidationMessage For="@(() => Prioridad.Tiempo)"></ValidationMessage>
                 </div>
+            </div>
             @*Footer*@
             <div class="card-footer">
                 <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
