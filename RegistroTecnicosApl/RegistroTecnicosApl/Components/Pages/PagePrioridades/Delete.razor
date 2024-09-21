@@ -1,0 +1,68 @@
+﻿@page "/Prioridad/Delete/{PrioridadId:int}"
+@inject PrioridadesServices prioridadService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Details Prioridad</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header">
+            <div class="text-center">
+                <h2><strong>Eliminar Prioridad</strong></h2>
+            </div>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <dl class="row">
+                <h5>Detalle del Tipo Tecnico</h5>
+                @*TipoTecnicoId*@
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@Prioridad.PrioridadId</dd>
+                @*Nombre*@
+                <dt class="col-sm-3">Nombre:</dt>
+                <dd class="col-sm-9">@Prioridad.Descripcion</dd>
+                @*Tiempo*@
+                <dt class="col-sm-3">Nombre:</dt>
+                <dd class="col-sm-9">@Prioridad.Tiempo</dd>
+            </dl>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
+            <button type="button" class="btn btn-danger bi bi-trash3" @onclick=Eliminar>Eliminar</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int PrioridadId { get; set; }
+    public Prioridades Prioridad { get; set; } = new Prioridades();
+    public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Prioridad = await prioridadService.Buscar(PrioridadId);
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("Prioridades/Index");
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminar = await prioridadService.Eliminar(Prioridad);
+
+        if (eliminar)
+        {
+            Mensaje = "Se ha eliminado la prioridad exitosamente.";
+            Volver();
+        }
+        else
+        {
+            Mensaje = "No se pudo eliminar la prioridad.";
+        }
+    }
+}
