@@ -1,0 +1,87 @@
+﻿@page "/Prioridades/Index"
+@inject PrioridadesServices prioridadService
+@inject NavigationManager navigationManager 
+@rendermode InteractiveServer
+
+<PageTitle>Index Prioridades</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+
+        @*Header*@
+        <div class="card-header">
+            <div class="text-center">
+                <h3><strong>Regristro de prioridades</strong></h3>
+            </div>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <div class="col text-end">
+                <a href="Prioridad/Create"><button type="button" class="btn btn-success bi bi-person-plus"> Crear</button></a>
+            </div>
+            @*tabla*@
+            <table class="table table-bordered text-center mt-4">
+                <thead>
+                    <tr>
+                        <th>PrioridadId</th>
+                        <th>Descripcion</th>
+                        <th>Tiempo</th>
+                        <th>Observar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var prioridad in ListarPrioridades)
+                    {
+                        <tr>
+                            <td>@prioridad.PrioridadId</td>
+                            <td>@prioridad.Descripcion</td>
+                            <td>@prioridad.Tiempo</td>
+                            @*Observar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-primary bi-eye" @onclick="() => PantallaObservar(prioridad.PrioridadId)"></button>
+                            </td>
+                            @*Editar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-success bi bi-pen" @onclick="() => PantallaModificar(prioridad.PrioridadId)"></button>
+                            </td>
+                            @*Eliminar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-danger bi bi-trash" @onclick="() => PantallaEliminar(prioridad.PrioridadId)"></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @*Fotter*@
+        <div class="card-footer">
+            <p><strong>Cantidad de prioridades: </strong> @ListarPrioridades.Count</p>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public List<Prioridades> ListarPrioridades { get; set; } = new List<Prioridades>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListarPrioridades = await prioridadService.Listar(p => true);
+    }
+
+    public void PantallaObservar(int id)
+    {
+        navigationManager.NavigateTo($"Prioridad/Details/{id}");
+    }
+
+    public void PantallaModificar(int id)
+    {
+        navigationManager.NavigateTo($"Prioridad/Edit/{id}");
+    }
+
+    public void PantallaEliminar(int id)
+    {
+        navigationManager.NavigateTo($"Prioridad/Delete/{id}");
+    }
+}
