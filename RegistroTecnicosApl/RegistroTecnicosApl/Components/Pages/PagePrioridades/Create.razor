@@ -1,0 +1,101 @@
+﻿@page "/Prioridad/Create"
+@inject PrioridadesServices priotidadService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Create Prioridad</PageTitle>
+<EditForm Model="Prioridad" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="shadow-lg">
+            @*Header*@
+            <div class="card-header">
+                <div class="text-center">
+                    <h3><strong>Crear Prioridad</strong></h3>
+                </div>
+            </div>
+            @*Body*@
+            <div class="card-body">
+                @*PrioridadId*@
+                <div class="col-3 mt-2">
+                    <label class="form-label"><strong>PrioridadId</strong></label>
+                    <div class="id-input">
+                        <InputNumber class="form-control" @bind-Value=Prioridad.PrioridadId></InputNumber>
+                    </div>
+                </div>
+                @*Descripcion*@
+                <div class="col-3 mt-2">
+                    <label class="form-label"><strong>Descripcion</strong></label>
+                    <InputText class="form-control" @bind-Value=Prioridad.Descripcion></InputText>
+                    <ValidationMessage For="(() => Prioridad.Descripcion)"></ValidationMessage>
+                </div>
+
+                @*Tiempo*@
+                <div class="col-3 mt-2">
+                    <label for="Tiempo" class="form-label"><strong>Tiempo (horas):</strong></label>
+                    <InputText class="form-control" @bind-Value="tiempoString" @oninput="OnTiempoChanged" placeholder="Ej: 10:30" />
+                    <ValidationMessage For="@(() => Prioridad.Tiempo)"></ValidationMessage>
+                </div>
+            @*Footer*@
+            <div class="card-footer">
+                <button type="button" class="btn btn-secondary" @onclick=Volver>Volver</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+            @Mensaje
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public Prioridades Prioridad { get; set; } = new Prioridades();
+    public string Mensaje { get; set; } = string.Empty;
+    
+    public void Volver()
+    {
+        navigationManager.NavigateTo("Prioridades/Index");
+    }
+
+    public async Task<bool> Validar()
+    {
+        var existe = await priotidadService.ExistePrioridad(Prioridad.PrioridadId, Prioridad.Descripcion);
+        return existe;
+    }
+
+    public async Task Guardar()
+    {
+        if (await Validar())
+        {
+            Mensaje = "Ya existe esta prioridad.";
+        }
+
+        var crear = await priotidadService.Guardar(Prioridad);
+
+        if (crear)
+        {
+            Mensaje = "Se ha creado correctamente.";
+            await Task.Delay(3000);
+            Volver();
+        }
+        else
+        {
+            Mensaje = "No se pudo crear el tipoTecnico.";
+        }
+    }
+
+    private string tiempoString;
+
+    private void OnTiempoChanged(ChangeEventArgs e)
+    {
+        tiempoString = e.Value.ToString();
+
+        if (TimeSpan.TryParse(tiempoString, out TimeSpan parsedTime))
+        {
+            Prioridad.Tiempo = parsedTime;
+        }
+        else
+        {
+            Mensaje = "Formato de tiempo no válido";
+        }
+    }
+
+}
