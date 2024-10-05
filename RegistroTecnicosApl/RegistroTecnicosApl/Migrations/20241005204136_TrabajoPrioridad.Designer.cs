@@ -11,8 +11,8 @@ using RegistroTecnicosApl.DAL;
 namespace RegistroTecnicosApl.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20240921220117_Initial")]
-    partial class Initial
+    [Migration("20241005204136_TrabajoPrioridad")]
+    partial class TrabajoPrioridad
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,7 +50,7 @@ namespace RegistroTecnicosApl.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Tiempo")
+                    b.Property<TimeSpan>("Tiempo")
                         .HasColumnType("TEXT");
 
                     b.HasKey("PrioridadId");
@@ -115,12 +115,17 @@ namespace RegistroTecnicosApl.Migrations
                     b.Property<decimal>("Monto")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("PrioridadId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("TecnicoId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("TrabajoId");
 
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("PrioridadId");
 
                     b.HasIndex("TecnicoId");
 
@@ -146,6 +151,12 @@ namespace RegistroTecnicosApl.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RegistroTecnicosApl.Models.Prioridades", "Prioridades")
+                        .WithMany()
+                        .HasForeignKey("PrioridadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RegistroTecnicosApl.Models.Tecnicos", "tecnicos")
                         .WithMany()
                         .HasForeignKey("TecnicoId")
@@ -153,6 +164,8 @@ namespace RegistroTecnicosApl.Migrations
                         .IsRequired();
 
                     b.Navigation("Cliente");
+
+                    b.Navigation("Prioridades");
 
                     b.Navigation("tecnicos");
                 });
