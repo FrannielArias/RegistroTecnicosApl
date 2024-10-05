@@ -27,5 +27,9 @@ namespace RegistroTecnicosApl.Models
         [ForeignKey("TecnicoId")]
         public Tecnicos? tecnicos { get; set; }
 
+        public int PrioridadId { get; set; }
+        [ForeignKey("PrioridadId")]
+
+        public Prioridades? Prioridades { get; set; }
     }
 }
