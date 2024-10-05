@@ -31,17 +31,16 @@
                     <InputSelect class="form-select" @bind-Value="Filtro">
                         <option value="">Elija una opci&omicron;n</option>
                         <option value="ID">ID</option>
-                        <option value="ClienteId">ClienteId</option>
                         <option value="NombreCliente">NombreCliente</option>
-                        <option value="TecnicoId">TecnicoId</option>
                         <option value="NombreTecnico">NombreTecnico</option>
+                        <option value="Prioridad">Prioridad</option>
                     </InputSelect>
                 </div>
                 @*Buscar*@
                 <div class="col-3">
                     <div class="input-group">
                         <input class="form-control" @bind="ValorFiltrado" placeholder="Buscar" />
-                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick=Buscar>Buscar</button>
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick=Buscar> Buscar</button>
                     </div>
                 </div>
 
@@ -60,11 +59,10 @@
                 <thead>
                     <tr>
                         <th>TrabajoId</th>
-                        <th>Fecha y hora</th>
-                        <th>ClienteId</th>
+                        <th>Fecha y hora</th>                       
                         <th>NombreCliente</th>
-                        <th>TecnicoId</th>
                         <th>NombreTecnico</th>
+                        <th>Prioridad</th>
                         <th>Descripcion</th>
                         <th>Monto</th>
                         <th>Observar</th>
@@ -78,12 +76,11 @@
                         <tr>
                             <td>@trabajo.TrabajoId</td>
                             <td>@trabajo.Fecha</td>
-                            <td>@trabajo.ClienteId</td>
-                            <td>@trabajo.Cliente.Nombres</td>
-                            <td>@trabajo.TecnicoId</td>
-                            <td>@trabajo.tecnicos.Nombres</td>
-                            <td>@trabajo.Descripcion</td>
-                            <td>@trabajo.Monto.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                            <td>@trabajo?.Cliente.Nombres</td>
+                            <td>@trabajo?.tecnicos.Nombres</td>
+                            <td>@trabajo?.Prioridades.Descripcion</td>
+                            <td>@trabajo?.Descripcion</td>
+                            <td>@trabajo?.Monto.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))</td>
                             @*Boton Observar*@
                             <td>
                                 <button type="button" class="btn btn-outline-primary bi bi-eye" @onclick="() => PantallaObservar(trabajo.TrabajoId)"></button>
@@ -123,15 +120,13 @@
         if (ValorFiltrado.Trim() != "" )
         {
             if (Filtro == "ID" && int.TryParse(ValorFiltrado, out int trabajoId))
-                ListarTrabajo = await trabajoServices.Listar(t => t.TrabajoId == trabajoId);
-            else if (Filtro == "ClienteId" && int.TryParse(ValorFiltrado, out int clienteId))
-                ListarTrabajo = await trabajoServices.Listar(c => c.ClienteId == clienteId);
+                ListarTrabajo = await trabajoServices.Listar(t => t.TrabajoId == trabajoId);       
             else if (Filtro == "NombreCliente")
                 ListarTrabajo = await trabajoServices.Listar(c => c.Cliente.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
-            else if (Filtro == "TecnicoId" && int.TryParse(ValorFiltrado, out int tecnicoId))
-                ListarTrabajo = await trabajoServices.Listar(t => t.TecnicoId == tecnicoId);
             else if (Filtro == "NombreTecnico")
                 ListarTrabajo = await trabajoServices.Listar(t => t.tecnicos.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
+            else if (Filtro == "Prioridad")
+                ListarTrabajo = await trabajoServices.Listar(t => t.Prioridades.Descripcion.ToLower().Contains(ValorFiltrado.ToLower()));
         }
         else
         {
