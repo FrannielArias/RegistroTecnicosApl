@@ -19,18 +19,30 @@
                 @*Fecha*@
                 <dt class="col-sm-3">Fecha:</dt>
                     <dd class="col-sm-9">@Trabajo.Fecha</dd>
+                @*ClienteId*@
+                <dt class="col-sm-3">ClienteId:</dt>
+                    <dd class="col-sm-9">@Trabajo.ClienteId</dd>
                 @*Cliente*@
                 <dt class="col-sm-3">Cliente:</dt>
                     <dd class="col-sm-9">@Trabajo?.Cliente?.Nombres</dd>
+                @*TecnicoId*@
+                <dt class="col-sm-3">TecnicoId:</dt>
+                    <dd class="col-sm-9">@Trabajo?.TecnicoId</dd>
                 @*Tecnico*@
-                <dt class="col-sm-3">Tecnico:</dt>
+                <dt class="col-sm-3">Técnico:</dt>
                     <dd class="col-sm-9">@Trabajo?.tecnicos?.Nombres</dd>
+                @*Prioridad*@
+                <dt class="col-sm-3">Prioridad:</dt>
+                    <dd class="col-sm-9">@Trabajo?.Prioridades?.Descripcion</dd>
+                @*Prioridad Hora*@
+                <dt class="col-sm-3">Hora de Prioridad:</dt>
+                    <dd class="col-sm-9">@Trabajo?.Prioridades?.Tiempo</dd>
                 @*Descripcion*@
-                <dt class="col-sm-3">Descripcion:</dt>
+                <dt class="col-sm-3">Descripción:</dt>
                     <dd class="col-sm-9">@Trabajo?.Descripcion</dd>
                 @*Monto*@
                 <dt class="col-sm-3">Monto:</dt>
-                    <dd class="col-sm-9">@Trabajo?.Monto</dd>
+                <dd class="col-sm-9">@Trabajo?.Monto.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))</dd>
             </dl>
         </div>
         @*Footer*@
