@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RegistroTecnicosApl.Components;
 using RegistroTecnicosApl.DAL;
+using RegistroTecnicosApl.Models;
 using RegistroTecnicosApl.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,8 @@ builder.Services.AddScoped<TiposTecnicosServices>();
 builder.Services.AddScoped<ClientesServices>();
 builder.Services.AddScoped<TrabajosServices>();
 builder.Services.AddScoped<PrioridadesServices>();
+builder.Services.AddScoped<ArticulosService>();
+builder.Services.AddScoped<DetalleService>();
 
 var app = builder.Build();
 
