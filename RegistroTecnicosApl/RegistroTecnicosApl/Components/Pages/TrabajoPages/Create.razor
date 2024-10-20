@@ -3,12 +3,13 @@
 @inject ClientesServices clienteService
 @inject TecnicoServices tecnicoService
 @inject PrioridadesServices prioridadService
+@inject ArticulosService articuloService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
 <PageTitle>Create Trabajo</PageTitle>
 <EditForm Model="Trabajo" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     <div class="container">
         <div class="shadow">
             @*Header*@
@@ -68,14 +69,71 @@
                 <div class="col-3 mt-2">
                     <label class="form-label"><strong>Descripion</strong></label>
                     <InputText class="form-control" @bind-Value=Trabajo.Descripcion></InputText>
-                    <ValidationMessage For="() => Trabajo.Descripcion"/>
+                    <ValidationMessage For="() => Trabajo.Descripcion" />
                 </div>
                 @*Monto*@
                 <div class="col-3 mt-2">
                     <label class="form-label"><strong>Monto</strong></label>
-                    <InputNumber class="form-control" @bind-Value="Trabajo.Monto"></InputNumber>
-                    <ValidationMessage For="() => Trabajo.Monto"/>
+                    <InputNumber class="form-control"  @bind-Value="Trabajo.Monto"></InputNumber>
                 </div>
+                
+                @*Detalle de trabajo*@
+                <div class="border border-success p-3 mt-3">
+                    <div class="mt-2">
+                        <h5>Detalle de trabajos</h5>
+                    </div>
+                    @*Select*@
+                    ﻿<div class="col-auto input-group align-items-center">
+                        <InputSelect class="form-select" @bind-Value=Seleccionado>
+                            <option value="0" selected disabled>Seleccione un Articulo</option>
+                            @foreach (var articulo in ListarArticulos)
+                            {
+                                <option value="@articulo.ArticuloId"> @articulo.ArticuloId. @articulo.Descripcion (@articulo.Precio)</option>
+                            }
+                        </InputSelect>
+                        @*Cantidad*@
+                        <label class="col-form-label input-group-text">Cantidad:</label>
+                        <InputNumber class="form-control" @bind-Value="TrabajoDetalle.Cantidad"></InputNumber>
+                        @*Precio*@
+                        <label class="col-form-label input-group-text">Precio:</label>
+                        <InputNumber class="form-control" id="quantity-input" readonly @bind-Value=TrabajoDetalle.Precio />
+                        @*Agregar*@
+                        <button type="button" class="btn btn-outline-success bi bi-plus" @onclick=Agregar>Agregar</button>
+                    </div>
+                    @*Tabla*@
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th>ArticuloId</th>
+                                <th>Articulo</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Remover</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var detalle in ListarDetalle)
+                            {
+                                <tr>
+                                    <td>@detalle.ArticuloId</td>
+                                    @if (@detalle.Articulos.Descripcion != null)
+                                    {
+                                        <td>@detalle.Articulos.Descripcion</td>
+                                    }
+                                    <td>@detalle.Cantidad</td>
+                                    <td>@detalle.Precio</td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger oi oi-trash" @onclick="@(() => RemoverArticulo(detalle))">
+                                            Remover
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
             @*Footer*@
             <div class="card-footer">
@@ -88,21 +146,23 @@
 
 @code {
     public Trabajos Trabajo { get; set; } = new Trabajos();
-    public string Mensaje = string.Empty;
     public List<Clientes> ListarCliente { get; set; } = new List<Clientes>();
     public List<Tecnicos> ListarTecnico { get; set; } = new List<Tecnicos>();
     public List<Prioridades> ListarPrioridad { get; set; } = new List<Prioridades>();
+    public List<Articulos> ListarArticulos { get; set; } = new List<Articulos>();
+    public List<TrabajosDetalle> ListarDetalle { get; set; } = new List<TrabajosDetalle>();
+    public TrabajosDetalle TrabajoDetalle { get; set; } = new TrabajosDetalle();
+    public List<Trabajos> ListarTrabajo { get; set; } = new List<Trabajos>();
+    public int Seleccionado { get; set; }
+    public string Mensaje = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
+        ListarTrabajo = await trabajoService.Listar(t=> true);
         ListarCliente = await clienteService.Listar(c => true);
         ListarTecnico = await tecnicoService.Listar(t => true);
         ListarPrioridad = await prioridadService.Listar(p => true);
-
-        if (Trabajo.Fecha == default)
-        {
-            Trabajo.Fecha = DateTime.Now;
-        }
+        ListarArticulos = await articuloService.Listar(a => true);
     }
 
     public void Volver()
@@ -112,6 +172,7 @@
 
     public async Task Guardar()
     {
+        Trabajo.TrabajoDetalle = ListarDetalle;
         var crear = await trabajoService.Guardar(Trabajo);
 
         if (crear)
@@ -125,4 +186,39 @@
             Mensaje = "No se pudo crear el trabajo.";
         }
     }
+
+    public void Agregar()
+    {
+        var articuloSeleccionado = ListarArticulos
+        .FirstOrDefault(a => a.ArticuloId == Seleccionado);
+
+        if (articuloSeleccionado != null && TrabajoDetalle.Cantidad > 0)
+        {
+            var nuevoDetalle = new TrabajosDetalle
+                {
+                    ArticuloId = articuloSeleccionado.ArticuloId,
+                    Articulos = articuloSeleccionado,
+                    Cantidad = TrabajoDetalle.Cantidad,
+                    Precio = articuloSeleccionado.Precio
+                };
+            ListarDetalle.Add(nuevoDetalle);
+            TrabajoDetalle = new TrabajosDetalle();
+            Trabajo.Monto += nuevoDetalle.Cantidad * nuevoDetalle.Precio;
+            Seleccionado = 0;
+        }
+    }
+
+    public void RemoverArticulo(TrabajosDetalle eliminarArticulo)
+    {
+        Trabajo.Monto -= eliminarArticulo.Cantidad * eliminarArticulo.Precio;
+        ListarDetalle.Remove(eliminarArticulo);
+        Seleccionado = eliminarArticulo.ArticuloId;
+        TrabajoDetalle.Cantidad = eliminarArticulo.Cantidad;
+        TrabajoDetalle.Precio = eliminarArticulo.Precio;
+    }
+
+    // private void Precio(TrabajosDetalle precio)
+    // {
+    //     TrabajoDetalle.Precio += precio.Cantidad * precio.Precio;
+    // }
 }
