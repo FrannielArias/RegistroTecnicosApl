@@ -76,8 +76,8 @@
                         <tr>
                             <td>@trabajo.TrabajoId</td>
                             <td>@trabajo.Fecha</td>
-                            <td>@trabajo?.Cliente.Nombres</td>
-                            <td>@trabajo?.tecnicos.Nombres</td>
+                            <td>@trabajo?.Clientes.Nombres</td>
+                            <td>@trabajo?.Tecnicos.Nombres</td>
                             <td>@trabajo?.Prioridades.Descripcion</td>
                             <td>@trabajo?.Descripcion</td>
                             <td>@trabajo?.Monto.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))</td>
@@ -122,9 +122,9 @@
             if (Filtro == "ID" && int.TryParse(ValorFiltrado, out int trabajoId))
                 ListarTrabajo = await trabajoServices.Listar(t => t.TrabajoId == trabajoId);       
             else if (Filtro == "NombreCliente")
-                ListarTrabajo = await trabajoServices.Listar(c => c.Cliente.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
+                ListarTrabajo = await trabajoServices.Listar(c => c.Clientes.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
             else if (Filtro == "NombreTecnico")
-                ListarTrabajo = await trabajoServices.Listar(t => t.tecnicos.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
+                ListarTrabajo = await trabajoServices.Listar(t => t.Tecnicos.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
             else if (Filtro == "Prioridad")
                 ListarTrabajo = await trabajoServices.Listar(t => t.Prioridades.Descripcion.ToLower().Contains(ValorFiltrado.ToLower()));
         }
