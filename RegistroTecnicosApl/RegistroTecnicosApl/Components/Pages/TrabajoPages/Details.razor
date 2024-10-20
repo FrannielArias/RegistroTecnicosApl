@@ -1,5 +1,6 @@
 ﻿@page "/Trabajo/Details/{TrabajoId:int}"
 @inject TrabajosServices trabajoService
+@inject DetalleService detalleService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -15,28 +16,46 @@
             <dl class="row">
                 @*TrabajoId*@
                 <dt class="col-sm-3">Id</dt>
-                <dd class="col-sm-9">@Trabajo.TrabajoId</dd>
+                    <dd class="col-sm-9">@Trabajo.TrabajoId</dd>
                 @*Fecha*@
                 <dt class="col-sm-3">Fecha:</dt>
-                <dd class="col-sm-9">@Trabajo.Fecha</dd>
+                    <dd class="col-sm-9">@Trabajo.Fecha</dd>
+                @*ClienteId*@
+                <dt class="col-sm-3">ClienteId:</dt>
+                    <dd class="col-sm-9">@Trabajo.ClienteId</dd>
                 @*Cliente*@
                 <dt class="col-sm-3">Cliente:</dt>
-                <dd class="col-sm-9">@Trabajo?.Cliente?.Nombres</dd>
+                    <dd class="col-sm-9">@Trabajo?.Clientes?.Nombres</dd>
+                @*TecnicoId*@
+                <dt class="col-sm-3">TecnicoId:</dt>
+                    <dd class="col-sm-9">@Trabajo?.TecnicoId</dd>
                 @*Tecnico*@
-                <dt class="col-sm-3">Tecnico:</dt>
-                <dd class="col-sm-9">@Trabajo?.tecnicos?.Nombres</dd>
+                <dt class="col-sm-3">Técnico:</dt>
+                    <dd class="col-sm-9">@Trabajo?.Tecnicos?.Nombres</dd>
+                @*Prioridad*@
+                <dt class="col-sm-3">Prioridad:</dt>
+                    <dd class="col-sm-9">@Trabajo?.Prioridades?.Descripcion</dd>
+                @*Prioridad Hora*@
+                <dt class="col-sm-3">Hora de Prioridad:</dt>
+                    <dd class="col-sm-9">@Trabajo?.Prioridades?.Tiempo</dd>
                 @*Descripcion*@
-                <dt class="col-sm-3">Descripcion:</dt>
-                <dd class="col-sm-9">@Trabajo?.Descripcion</dd>
+                <dt class="col-sm-3">Descripción:</dt>
+                    <dd class="col-sm-9">@Trabajo?.Descripcion</dd>
+                @*Articulo*@
+                @foreach (var detalle in ListarDetalle)
+                {
+                    <dt class="col-sm-3">Articulos:</dt>
+                    <dd class="col-sm-9">@detalle.Articulos.Descripcion</dd>
+                }
                 @*Monto*@
                 <dt class="col-sm-3">Monto:</dt>
-                <dd class="col-sm-9">@Trabajo?.Monto</dd>
+                <dd class="col-sm-9">@Trabajo?.Monto.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))</dd>
             </dl>
         </div>
         @*Footer*@
         <div class="card-footer">
             <button type="button" class="btn btn-secondary" @onclick="Volver">Volver</button>
-            <a href=@($"https://api.whatsapp.com/send?phone={Trabajo?.Cliente?.WhatsApp}&text=Saludos,%20buenos%20días.%20Su%20trabajo%20ya%20está%20finalizado.")>
+            <a href=@($"https://api.whatsapp.com/send?phone={Trabajo?.Clientes?.WhatsApp}&text=Saludos,%20buenos%20días.%20Su%20trabajo%20ya%20está%20finalizado.")>
                 <button type="button" class="btn btn-success bi bi-whatsapp">WhatsApp</button>
             </a>
         </div>
@@ -47,10 +66,13 @@
     [Parameter]
     public int TrabajoId { get; set; }
     public Trabajos Trabajo { get; set; } = new Trabajos();
+    public TrabajosDetalle trabajoDetalle { get; set; } = new TrabajosDetalle();
+    public List<TrabajosDetalle> ListarDetalle { get; set; } = new List<TrabajosDetalle>();
 
     protected override async Task OnInitializedAsync()
     {
-        Trabajo = await trabajoService.BuscarTodo(TrabajoId);
+        Trabajo = await trabajoService.Buscar(TrabajoId);
+        ListarDetalle = await trabajoService.BuscarDetalle(TrabajoId);
     }
 
     public void Volver()
