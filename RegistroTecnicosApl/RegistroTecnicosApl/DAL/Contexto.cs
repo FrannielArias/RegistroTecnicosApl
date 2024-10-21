@@ -21,6 +21,7 @@ namespace RegistroTecnicosApl.DAL
         public DbSet<TrabajosDetalle> TrabajoDetalle { get; set; }
 
         public DbSet<Articulos> Articulos { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Articulos>().HasData(
