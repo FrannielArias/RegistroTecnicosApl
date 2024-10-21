@@ -35,19 +35,19 @@ public class TecnicoServices
 
     public async Task<bool> Guardar(Tecnicos tecnico)
     {
-        if(!await Existe(tecnico.TecnicoId))
+        if (!await Existe(tecnico.TecnicoId))
         {
             return await Insertar(tecnico);
         }
         else
         {
             return await Modificar(tecnico);
-        }    
+        }
     }
 
     public async Task<bool> Eliminar(Tecnicos tecnico)
     {
-        return await _contexto .Tecnicos
+        return await _contexto.Tecnicos
             .AsNoTracking()
             .Where(t => t.TecnicoId == tecnico.TecnicoId)
             .ExecuteDeleteAsync() > 0;

@@ -11,11 +11,11 @@ namespace RegistroTecnicosApl.Services;
 public class ClientesServices
 {
     private readonly Contexto _contexto;
-    public ClientesServices(Contexto contexto) 
+    public ClientesServices(Contexto contexto)
     {
         _contexto = contexto;
     }
-    
+
     public async Task<bool> Guardar(Clientes cliente)
     {
         if (!await Existe(cliente.ClienteId))
@@ -63,7 +63,7 @@ public class ClientesServices
     public async Task<bool> ExisteCliente(int clienteId, string nombre, string whatsApp)
     {
         return await _contexto.Clientes
-            .AnyAsync(c => c.ClienteId != clienteId 
+            .AnyAsync(c => c.ClienteId != clienteId
             && (c.Nombres.ToLower().Equals(nombre.ToLower())
             || c.WhatsApp.ToLower().Equals(whatsApp.ToLower())));
     }

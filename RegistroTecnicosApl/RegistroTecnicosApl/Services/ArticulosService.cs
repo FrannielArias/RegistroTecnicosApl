@@ -7,7 +7,7 @@ namespace RegistroTecnicosApl.Services
 {
     public class ArticulosService(Contexto _contexto)
     {
-        public async Task<List<Articulos>> Listar (Expression<Func<Articulos, bool>> criterio)
+        public async Task<List<Articulos>> Listar(Expression<Func<Articulos, bool>> criterio)
         {
             return await _contexto.Articulos
                 .AsNoTracking()
