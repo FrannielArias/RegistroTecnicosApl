@@ -105,7 +105,7 @@
                         <thead>
                             <tr>
                                 <th>ArticuloId</th>
-                                <th>Articulo</th>
+                                @* <th>Articulo</th> *@
                                 <th>Cantidad</th>
                                 <th>Precio</th>
                                 <th>Remover</th>
@@ -117,10 +117,10 @@
                             {
                                 <tr>
                                     <td>@detalle.ArticuloId</td>
-                                    @if (@detalle.Articulos.Descripcion != null)
+                                    @* @if (@detalle.Articulos.Descripcion != null)
                                     {
                                         <td>@detalle.Articulos.Descripcion</td>
-                                    }
+                                    } *@
                                     <td>@detalle.Cantidad</td>
                                     <td>@detalle.Precio</td>
                                     <td>
@@ -197,7 +197,7 @@
             var nuevoDetalle = new TrabajosDetalle
                 {
                     ArticuloId = articuloSeleccionado.ArticuloId,
-                    Articulos = articuloSeleccionado,
+                    // Articulos = articuloSeleccionado,
                     Cantidad = TrabajoDetalle.Cantidad,
                     Precio = articuloSeleccionado.Precio
                 };
