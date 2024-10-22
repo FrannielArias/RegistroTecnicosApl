@@ -22,4 +22,5 @@ public class Articulos
     [Required(ErrorMessage = "Este campo es obligatorio.")]
     [Range(minimum: 0.1, maximum: 9999999999999, ErrorMessage = "Elaaaaaaaaaa")]
     public int Existencia { get; set; }
+    
 }

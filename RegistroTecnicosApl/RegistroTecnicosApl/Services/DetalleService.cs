@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RegistroTecnicosApl.DAL;
 using RegistroTecnicosApl.Models;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace RegistroTecnicosApl.Services

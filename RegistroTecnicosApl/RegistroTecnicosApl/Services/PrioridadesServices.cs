@@ -21,8 +21,8 @@ public class PrioridadesServices
         {
             return await Insertar(prioridad);
         }
-        else 
-        { 
+        else
+        {
             return await Modificar(prioridad);
         }
     }
@@ -40,7 +40,7 @@ public class PrioridadesServices
     private async Task<bool> Modificar(Prioridades prioridad)
     {
         _contexto.Update(prioridad);
-        return await _contexto.SaveChangesAsync() > 0; 
+        return await _contexto.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> Eliminar(Prioridades prioridad)
@@ -60,7 +60,7 @@ public class PrioridadesServices
 
     public async Task<bool> ExistePrioridad(int id, string descripcion)
     {
-        return await _contexto.Prioridades.AnyAsync(p => p.PrioridadId == id 
+        return await _contexto.Prioridades.AnyAsync(p => p.PrioridadId == id
         && p.Descripcion.ToLower().Equals(descripcion.ToLower()));
     }
 

@@ -5,13 +5,14 @@ using System.Linq.Expressions;
 
 namespace RegistroTecnicosApl.Services;
 
-public class ArticulosService(Contexto _contexto)
-{
-    public async Task<List<Articulos>> Listar(Expression<Func<Articulos, bool>> criterio)
+    public class ArticulosService(Contexto _contexto)
     {
-        return await _contexto.Articulos
-            .AsNoTracking()
-            .Where(criterio)
-            .ToListAsync();
+        public async Task<List<Articulos>> Listar(Expression<Func<Articulos, bool>> criterio)
+        {
+            return await _contexto.Articulos
+                .AsNoTracking()
+                .Where(criterio)
+                .ToListAsync();
+        }
     }
 }
