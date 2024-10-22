@@ -2,6 +2,7 @@
 using RegistroTecnicosApl.Models;
 using RegistroTecnicosApl.Services;
 
+
 namespace RegistroTecnicosApl.DAL
 {
     public class Contexto : DbContext
