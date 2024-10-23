@@ -5,10 +5,11 @@ using System.Linq.Expressions;
 
 namespace RegistroTecnicosApl.Services
 {
-    public class ArticulosService(Contexto _contexto)
+    public class ArticulosService(IDbContextFactory<Contexto> DbFactory)
     {
         public async Task<List<Articulos>> Listar(Expression<Func<Articulos, bool>> criterio)
         {
+            await using var _contexto = await DbFactory.CreateDbContextAsync();
             return await _contexto.Articulos
                 .AsNoTracking()
                 .Where(criterio)

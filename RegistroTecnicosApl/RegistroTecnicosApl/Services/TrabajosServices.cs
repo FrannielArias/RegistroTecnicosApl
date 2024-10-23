@@ -7,16 +7,13 @@ using System.Linq.Expressions;
 
 namespace RegistroTecnicosApl.Services;
 
-public class TrabajosServices
+public class TrabajosServices(IDbContextFactory<Contexto> DbFactory)
 {
-    private readonly Contexto _contexto;
 
-    public TrabajosServices(Contexto contexto)
-    {
-        _contexto = contexto;
-    }
     public async Task<bool> Guardar(Trabajos trabajo)
     {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+
         if (!await Existe(trabajo.TrabajoId))
         {
             foreach (var detalle in trabajo.TrabajoDetalle)
@@ -36,17 +33,23 @@ public class TrabajosServices
     }
     private async Task<bool> Existe(int trabajoId)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         return await _contexto.Trabajos
             .AnyAsync(t => t.TrabajoId == trabajoId);
     }
     private async Task<bool> Insertar(Trabajos trabajo)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         _contexto.Add(trabajo);
         return await _contexto.SaveChangesAsync() > 0;
     }
 
     private async Task<bool> Modificar(Trabajos trabajo)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         _contexto.Update(trabajo);
         return await _contexto
             .SaveChangesAsync() > 0;
@@ -54,6 +57,8 @@ public class TrabajosServices
 
     public async Task<bool> Eliminar(Trabajos trabajo)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         return await _contexto.Trabajos
             .AsNoTracking()
             .Where(t => t.TrabajoId == trabajo.TrabajoId)
@@ -62,6 +67,8 @@ public class TrabajosServices
 
     public async Task<Trabajos?> Buscar(int trabajoId)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         return await _contexto.Trabajos
             .Include(t => t.Tecnicos)
             .Include(c => c.Clientes)
@@ -71,6 +78,8 @@ public class TrabajosServices
     }
     public async Task<Trabajos?> BuscarTodo(int trabajoId)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         return await _contexto.Trabajos
             .Include(t => t.TrabajoId)
             .Include(c => c.Clientes)
@@ -82,6 +91,8 @@ public class TrabajosServices
 
     public async Task<List<Trabajos>> Listar(Expression<Func<Trabajos, bool>> criterio)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         return await _contexto.Trabajos
             .Include(d => d.TrabajoDetalle)
             .Include(t => t.Tecnicos)
@@ -94,6 +105,8 @@ public class TrabajosServices
 
     public async Task<List<Articulos>> ListarArticulos()
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         return await _contexto.Articulos
             .AsNoTracking()
             .ToListAsync();
@@ -101,6 +114,8 @@ public class TrabajosServices
 
     public async Task<List<TrabajosDetalle>> ListarDetalle(int trabajoId)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         var detalle = await _contexto.TrabajoDetalle
             .Where(d => d.TrabajoId == trabajoId)
             .ToListAsync();
@@ -109,6 +124,8 @@ public class TrabajosServices
     }
     public async Task<List<TrabajosDetalle>> BuscarDetalle(int id)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         return await _contexto.TrabajoDetalle
             .Include(td => td.Articulos)
             .AsNoTracking()
@@ -117,12 +134,16 @@ public class TrabajosServices
     }
     public async Task<Articulos> BuscarArticulos(int id)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         return await _contexto.Articulos
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.ArticuloId == id);
     }
     public async Task<bool> ActualizarArticulo(Articulos articulo)
     {
+        await using var _contexto = await DbFactory.CreateDbContextAsync();
+
         _contexto.Articulos.Update(articulo);
         return await _contexto
             .SaveChangesAsync() > 0;
