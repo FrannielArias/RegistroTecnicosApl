@@ -10,9 +10,9 @@ namespace RegistroTecnicosApl.Models
 
         public int Cantidad { get; set; }
 
-        public decimal Costo { get; set; }
+        public double Costo { get; set; }
 
-        public decimal Precio { get; set; }
+        public double Precio { get; set; }
 
         public int ArticuloId { get; set; }
         [ForeignKey("ArticuloId")]

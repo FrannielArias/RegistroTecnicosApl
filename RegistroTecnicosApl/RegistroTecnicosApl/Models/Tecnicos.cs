@@ -14,7 +14,7 @@ namespace RegistroTecnicosApl.Models
 
         [Required(ErrorMessage = "Este campo es obligatorio.")]
         [Range(minimum: 0.1, maximum:9999999999,  ErrorMessage = "El monto debe ser mayor a 0.")]
-        public decimal SueldoHora { get; set; }
+        public double SueldoHora { get; set; }
 
         [ForeignKey("TipoTecnicoId")]
         public int TipoTecnicoId { get; set; }

@@ -17,7 +17,7 @@ namespace RegistroTecnicosApl.Models
 
         [Required(ErrorMessage = "Este campi es obligatorio.")]
         [Range(maximum: 99999999, minimum: 0.1, ErrorMessage = "No se permiten valores menores a 0.")]
-        public decimal Monto { get; set; }
+        public double Monto { get; set; }
 
         public int ClienteId { get; set; }
         [ForeignKey("ClienteId")]
@@ -32,7 +32,7 @@ namespace RegistroTecnicosApl.Models
 
         public Prioridades? Prioridades { get; set; }
 
-        public ICollection<TrabajosDetalle> TrabajoDetalle { get; set; }
+        public ICollection<TrabajosDetalle> TrabajoDetalle { get; set; } = new List<TrabajosDetalle>();
 
     }
 }
