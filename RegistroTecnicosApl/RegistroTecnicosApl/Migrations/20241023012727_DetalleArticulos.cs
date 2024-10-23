@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RegistroTecnicosApl.Migrations
 {
     /// <inheritdoc />
-    public partial class Articulos : Migration
+    public partial class DetalleArticulos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
