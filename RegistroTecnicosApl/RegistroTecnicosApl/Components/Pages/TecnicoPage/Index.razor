@@ -119,7 +119,7 @@
                 ListarTecnico = await tecnicoServices.Listar(t => t.TecnicoId == tecnicoId);
             else if (Filtro == "Nombre")
                 ListarTecnico = await tecnicoServices.Listar(t => t.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
-            else if (Filtro == "Sueldo Hora" && decimal.TryParse(ValorFiltrado, out decimal sueldoHora))
+            else if (Filtro == "Sueldo Hora" && double.TryParse(ValorFiltrado, out double sueldoHora))
                 ListarTecnico = await tecnicoServices.Listar(t => t.SueldoHora == sueldoHora);
         }
         else
