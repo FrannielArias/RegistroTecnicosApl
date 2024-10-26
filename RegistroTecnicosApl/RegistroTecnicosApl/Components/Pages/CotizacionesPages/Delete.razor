@@ -1,0 +1,85 @@
+﻿@page "/Cotizaciones/Delete/{CotizacionId:int}"
+@inject CotizacionesServices cotizacioneService
+@inject CotizacionesDetalleService cotizacionDetalleService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Delete trabajo</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header">
+            <h3><strong>Eliminar trabajo</strong></h3>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <dl class="row">
+                @*CotizacionId*@
+                <dt class="col-sm-3">Id</dt>
+                <dd class="col-sm-9">@Cotizacion.CotizacionId</dd>
+                @*Fecha*@
+                <dt class="col-sm-3">Fecha:</dt>
+                <dd class="col-sm-9">@Cotizacion.Fecha</dd>
+                @*ClienteId*@
+                <dt class="col-sm-3">ClienteId:</dt>
+                <dd class="col-sm-9">@Cotizacion.ClienteId</dd>
+                @*ClienteNombre*@
+                <dt class="col-sm-3">Nombre del cliente:</dt>
+                <dd class="col-sm-9">@Cotizacion?.Clientes?.Nombres</dd>
+                @*Observacion*@
+                <dt class="col-sm-3">Observacion:</dt>
+                <dd class="col-sm-9">@Cotizacion.Observacion</dd>
+                @*Articulos*@
+                <dt class="col-sm-3">Articulos:</dt>
+                @foreach (var detalle in ListarCotizacionDetalle)
+                {
+                    <dd class="col-sm-9">@detalle.Articulos.Descripcion</dd>
+                }
+                @*Monto*@
+                <dt class="col-sm-3">Monto:</dt>
+                <dd class="col-sm-9">@Cotizacion.Monto</dd>
+            </dl>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <button type="button" class="btn btn-secondary" @onclick="Volver">Volver</button>
+            <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+        </div>
+    </div>
+</div>
+@Mensaje
+
+@code {
+    [Parameter]
+    public int CotizacionId { get; set; }
+    public Cotizaciones Cotizacion { get; set; } = new Cotizaciones();
+    public CotizacionesDetalle CotizacioDetalle { get; set; } = new CotizacionesDetalle();
+    public List<CotizacionesDetalle> ListarCotizacionDetalle { get; set; } = new List<CotizacionesDetalle>();
+    public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Cotizacion = await cotizacioneService.Buscar(CotizacionId);
+        ListarCotizacionDetalle = await cotizacioneService.BuscarDetalle(CotizacionId);
+    }
+
+    public async Task Eliminar()
+    {
+        var eliminar = await cotizacioneService.Eliminar(Cotizacion);
+
+        if (eliminar)
+        {
+            Mensaje = "La cotizacion ha sido eliminado.";
+
+        }
+        else
+        {
+            Mensaje = "No se a podido eliminar la cotizacion.";
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("Cotizaciones/Index");
+    }
+}
