@@ -1,0 +1,140 @@
+﻿@page "/Cotizaciones/Index"
+@inject CotizacionesServices cotizacionService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Index cotizaciones</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*hearder*@
+        <div class="card-header">
+            <div class="text-center">
+                <h2><strong>Resgistro de Cotizaciones</strong></h2>
+            </div>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <div class="row">
+                @*Filtrar*@
+                <div class="col-3">
+                    <label class="col-form-label"><strong>Filtrar por</strong></label>
+                </div>
+                @*ValorFiltrado*@
+                <div class="col-3">
+                    <label class="form-label"><strong>Buscar</strong></label>
+                </div>
+            </div>
+
+            <div class="row">
+                @*Filtro*@
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="">Elija una opci&omicron;n</option>
+                        <option value="ID">ID</option>
+                        <option value="Cliente">Cliente</option>
+                    </InputSelect>
+                </div>
+                @*Buscar*@
+                <div class="col-3">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltrado" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick=Buscar> Buscar</button>
+                    </div>
+                </div>
+
+                @*Restablecer*@
+                <div class="col-3">
+                    <button type="button" class="btn btn-outline-secondary bi bi-arrow-clockwise" @onclick=Restablecer></button>
+                </div>
+
+                @*Crear*@
+                <div class="col text-end">
+                    <a href="Cotizaciones/Create"><button type="button" class="btn btn-success bi bi-person-plus"> Crear</button></a>
+                </div>
+            </div>
+
+            @*Tabla*@
+            <table class="table table-bordered text-center mt-4">
+                <thead>
+                    <tr>
+                        <th>CotizacionesId</th>
+                        <th>Fecha y hora</th>
+                        <th>Cliente</th>
+                        <th>Observacion</th>
+                        <th>Monto</th>
+                        <th>Observar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cotizacion in ListarCotizaciones)
+                    {
+                        <tr>
+                            <td>@cotizacion.CotizacionId</td>
+                            <td>@cotizacion.Fecha</td>
+                            <td>@cotizacion?.Clientes.Nombres</td>
+                            <td>@cotizacion.Observacion</td>
+                            <td>@cotizacion.Monto.ToString("C", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                            @*Observar*@
+                            <td>
+                                <a href="Cotizaciones/Details/@cotizacion.CotizacionId" class="btn btn-outline-primary">
+                                    <span class="bi bi-eye"></span>
+                                </a>
+                            </td>
+                            @*Editar*@
+                            <td>
+                                <a href="Cotizaciones/Edit/@cotizacion.CotizacionId" class="btn btn-outline-warning">
+                                    <span class="bi bi-pen"></span>
+                                </a>
+                            </td>
+                            @*Eliminar*@
+                            <td>
+                                <a href="Cotizaciones/Delete/@cotizacion.CotizacionId" class="btn btn-outline-danger">
+                                    <span class="bi bi-trash"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <p><strong>Cantidad de Cotizaciones:</strong>@ListarCotizaciones.Count</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    public Clientes Cliente { get; set; } = new Clientes();
+    public Cotizaciones Cotizacion { get; set; } = new Cotizaciones();
+    public List<Cotizaciones> ListarCotizaciones { get; set; } = [];
+    public string ValorFiltrado = string.Empty;
+    public string Filtro = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListarCotizaciones = await cotizacionService.Listar(c => true);
+    }
+
+    public async Task Buscar()
+    {
+        if (ValorFiltrado.Trim() != "")
+        {
+            if (Filtro == "ID" && int.TryParse(ValorFiltrado, out int cotizacionId))
+                ListarCotizaciones = await cotizacionService.Listar(c => c.CotizacionId == cotizacionId);
+            else if (Filtro == "Cliente")
+                ListarCotizaciones = await cotizacionService.Listar(c => c.Clientes.Nombres.ToLower().Contains(ValorFiltrado.ToLower()));
+        }
+        else
+        {
+            ListarCotizaciones = await cotizacionService.Listar(c => true);
+        }
+    }
+    public async Task Restablecer()
+    {
+        ListarCotizaciones = await cotizacionService.Listar(c => true);
+        ValorFiltrado = string.Empty;
+        Filtro = string.Empty;
+    }
+}
