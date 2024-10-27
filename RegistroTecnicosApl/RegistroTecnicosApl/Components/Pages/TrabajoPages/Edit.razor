@@ -78,7 +78,6 @@
                     <InputNumber class="form-control" @bind-Value="Trabajo.Monto"></InputNumber>
                     <ValidationMessage For="() => Trabajo.Monto" />
                 </div>
-
                 @*Detalle de trabajo*@
                 <div class="border border-success p-3 mt-3">
                     <div class="mt-2">
@@ -164,8 +163,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+
         Trabajo = await trabajoService.Buscar(TrabajoId);
-        if (Trabajo != null)
         ListarTecnico = await tecnicoService.Listar(t => true);
         ListarClientes = await clienteService.Listar(c => true);
         ListarTrabajos = await trabajoService.Listar(t => true);
@@ -183,12 +182,11 @@
     public async Task Guardar()
     {
         var modificar = await trabajoService.Guardar(Trabajo);
-
         if (modificar)
         {
             Mensaje = "Se ha modificar correctamente.";
-            await Task.Delay(2000);
-            Volver();
+            // await Task.Delay(2000);
+            // Volver();
         }
         else
         {
@@ -225,4 +223,5 @@
         TrabajoDetalle.Cantidad = eliminarArticulo.Cantidad;
         TrabajoDetalle.Precio = eliminarArticulo.Precio;
     }
+ 
 }
