@@ -21,6 +21,8 @@ builder.Services.AddScoped<TrabajosServices>();
 builder.Services.AddScoped<PrioridadesServices>();
 builder.Services.AddScoped<ArticulosService>();
 builder.Services.AddScoped<DetalleService>();
+builder.Services.AddScoped<CotizacionesDetalleService>();
+builder.Services.AddScoped<CotizacionesServices>();
 
 var app = builder.Build();
 
