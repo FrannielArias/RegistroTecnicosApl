@@ -71,6 +71,28 @@ namespace RegistroTecnicosApl.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cotizaciones",
+                columns: table => new
+                {
+                    CotizacionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Observacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Monto = table.Column<double>(type: "float", nullable: false),
+                    ClienteId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cotizaciones", x => x.CotizacionId);
+                    table.ForeignKey(
+                        name: "FK_Cotizaciones_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tecnicos",
                 columns: table => new
                 {
@@ -88,6 +110,36 @@ namespace RegistroTecnicosApl.Migrations
                         column: x => x.TipoTecnicoId,
                         principalTable: "TiposTecnicos",
                         principalColumn: "TipoTecnicoId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CotizacionesDetalle",
+                columns: table => new
+                {
+                    CotizacionDetalleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CotizacionId = table.Column<int>(type: "int", nullable: false),
+                    CotizacionesCotizacionId = table.Column<int>(type: "int", nullable: false),
+                    ArticuloId = table.Column<int>(type: "int", nullable: false),
+                    ArticulosArticuloId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<double>(type: "float", nullable: false),
+                    Precio = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CotizacionesDetalle", x => x.CotizacionDetalleId);
+                    table.ForeignKey(
+                        name: "FK_CotizacionesDetalle_Articulos_ArticulosArticuloId",
+                        column: x => x.ArticulosArticuloId,
+                        principalTable: "Articulos",
+                        principalColumn: "ArticuloId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CotizacionesDetalle_Cotizaciones_CotizacionesCotizacionId",
+                        column: x => x.CotizacionesCotizacionId,
+                        principalTable: "Cotizaciones",
+                        principalColumn: "CotizacionId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -171,6 +223,21 @@ namespace RegistroTecnicosApl.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cotizaciones_ClienteId",
+                table: "Cotizaciones",
+                column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CotizacionesDetalle_ArticulosArticuloId",
+                table: "CotizacionesDetalle",
+                column: "ArticulosArticuloId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CotizacionesDetalle_CotizacionesCotizacionId",
+                table: "CotizacionesDetalle",
+                column: "CotizacionesCotizacionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tecnicos_TipoTecnicoId",
                 table: "Tecnicos",
                 column: "TipoTecnicoId");
@@ -205,7 +272,13 @@ namespace RegistroTecnicosApl.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CotizacionesDetalle");
+
+            migrationBuilder.DropTable(
                 name: "TrabajoDetalle");
+
+            migrationBuilder.DropTable(
+                name: "Cotizaciones");
 
             migrationBuilder.DropTable(
                 name: "Articulos");
