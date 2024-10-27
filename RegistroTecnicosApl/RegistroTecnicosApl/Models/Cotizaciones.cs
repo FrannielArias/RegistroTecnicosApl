@@ -17,8 +17,9 @@ namespace RegistroTecnicosApl.Models
         [Range(minimum: 0.1, maximum: 9999999999999, ErrorMessage = "El monto debe ser mayor a 0.")]
         public double Monto { get; set; }
 
-        [ForeignKey("ClienteId")]
         public int ClienteId { get; set; }
+        [ForeignKey("ClienteId")]
+        public Clientes? Clientes { get; set; }
 
         public ICollection<CotizacionesDetalle> CotizacionesDetalles { get; set; } = new List<CotizacionesDetalle>();
     }
