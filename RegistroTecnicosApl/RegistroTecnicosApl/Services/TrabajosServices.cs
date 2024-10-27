@@ -31,6 +31,7 @@ public class TrabajosServices(IDbContextFactory<Contexto> DbFactory)
         else
             return await Modificar(trabajo);
     }
+
     private async Task<bool> Existe(int trabajoId)
     {
         await using var _contexto = await DbFactory.CreateDbContextAsync();
@@ -38,6 +39,7 @@ public class TrabajosServices(IDbContextFactory<Contexto> DbFactory)
         return await _contexto.Trabajos
             .AnyAsync(t => t.TrabajoId == trabajoId);
     }
+
     private async Task<bool> Insertar(Trabajos trabajo)
     {
         await using var _contexto = await DbFactory.CreateDbContextAsync();
